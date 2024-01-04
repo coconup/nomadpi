@@ -1,0 +1,12 @@
+version: '1'
+application: IOTstack
+service: nodered
+comment: Selected addons
+dockerFileInstallCommand: "RUN cd /usr/src/node-red && npm install --save "
+addons:
+- "node-red-configurable-ping"
+- "node-red-contrib-boolean-logic"
+- "node-red-contrib-influxdb"
+- "node-red-dashboard"
+- "node-red-node-pi-gpiod"
+- "node-red-node-rbe"

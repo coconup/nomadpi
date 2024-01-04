@@ -1,0 +1,211 @@
+version: '3.6'
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+  nextcloud:
+    driver: bridge
+    internal: true
+    ipam:
+      driver: default
+
+services:
+  portainer-ce:
+    container_name: portainer-ce
+    image: portainer/portainer-ce
+    restart: unless-stopped
+    ports:
+    - "8000:8000"
+    - "9000:9000"
+    # HTTPS
+    - "9443:9443"
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./volumes/portainer-ce/data:/data
+
+  portainer_agent:
+    image: portainer/agent
+    container_name: portainer-agent
+    ports:
+    - "9001:9001"
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /var/lib/docker/volumes:/var/lib/docker/volumes
+    restart: unless-stopped
+  
+  gpiod:
+    container_name: gpiod
+    image: corbosman/pigpiod
+    restart: unless-stopped
+    privileged: true
+    ports:
+    - "8888:8888"
+
+  gpsd:
+    container_name: gpsd
+    build:
+      context: ./services/gpsd/.
+    environment:
+      USB_DEVICE_PATH: /dev/${GPSD_UDEV_KEY}
+    devices:
+    - /dev/${GPSD_UDEV_KEY}:/dev/${GPSD_UDEV_KEY}
+    ports:
+    - "2947:2947"
+    restart: unless-stopped
+  
+  vanpi-core-api:
+    container_name: vanpi-core-api
+    build:
+      context: ./services/nodered/.
+      args:
+      - DOCKERHUB_TAG=latest
+      - EXTRA_PACKAGES=bluez usbutils
+    restart: unless-stopped
+    user: "0"
+    network_mode: "host"
+    environment:
+      TZ: ${TZ:-Etc/UTC}
+      NODE_RED_ENABLE_PROJECTS: "true"
+      GPIOD_HOST: 127.0.0.1
+      PEKAWAY_SCRIPTS_PATH: /scripts
+      HTTP_API_BASE_PATH: api
+      VANPI_APP_API_ALLOWED_DOMAINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
+      DB_HOST: 127.0.0.1
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
+      ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
+    ports:
+    - "1880:1880"
+    devices:
+    - /dev/mem:/dev/mem
+    - /dev/gpiomem:/dev/gpiomem
+    - /dev/i2c-1:/dev/i2c-1
+    volumes:
+    - ./volumes/nodered/data:/data
+    - ./volumes/nodered/ssh:/root/.ssh
+    - ./volumes/nodered/scripts:/scripts
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /run/dbus:/run/dbus:ro
+    - /sys:/sys
+    - /dev:/dev
+    - /lib/udev/rules.d:/lib/udev/rules.d
+  
+  nodered_automation:
+    container_name: nodered_automation
+    image: nodered/node-red
+    restart: unless-stopped
+    user: "0"
+    network_mode: "host"
+    environment:
+      TZ: ${TZ:-Etc/UTC}
+      NODE_RED_ENABLE_PROJECTS: "true"
+      PORT: 1881
+      VANPI_APP_API_URL: http://127.0.0.1:1880/api/v1
+    ports:
+    - "1881:1881"
+    volumes:
+    - ./volumes/nodered/data:/data
+    - ./volumes/nodered/ssh:/root/.ssh
+
+  mosquitto:
+    container_name: mosquitto
+    build:
+      context: ./.templates/mosquitto/.
+      args:
+      - MOSQUITTO_BASE=eclipse-mosquitto:latest
+    restart: unless-stopped
+    environment:
+    - TZ=${TZ:-Etc/UTC}
+    ports:
+    - "1883:1883"
+    volumes:
+    - ./volumes/mosquitto/config:/mosquitto/config
+    - ./volumes/mosquitto/data:/mosquitto/data
+    - ./volumes/mosquitto/log:/mosquitto/log
+    - ./volumes/mosquitto/pwfile:/mosquitto/pwfilie
+  
+  mariadb:
+    build: ./.templates/mariadb/.
+    container_name: mariadb
+    environment:
+      TZ: ${TZ:-Etc/UTC}
+      PUID: 1000
+      PGID: 1000
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+    - ./volumes/mariadb/config:/config
+    - ./volumes/mariadb/db_backup:/backup
+    ports:
+    - "3306:3306"
+    restart: unless-stopped
+
+  vanpi-react:
+    container_name: vanpi-react
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && npm start"
+    volumes:
+    - ./volumes/vanpi-react:/usr/src/app
+    ports:
+    - "3000:3000"
+    restart: unless-stopped
+  
+  vanpi-app-api:
+    container_name: vanpi-app-api
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && node server.js"
+    volumes:
+    - ./volumes/vanpi-app-api/src:/usr/src/app
+    ports:
+    - "3001:3001"
+    depends_on:
+    - mariadb
+    restart: unless-stopped
+    network_mode: "host"
+    environment:
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DB_HOST: "127.0.0.1"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      AUTOMATION_API_ROOT_URL: "http://127.0.0.1:1881/api/v1"
+      VANPI_API_ROOT_URL: ${VANPI_API_ROOT_URL}
+      VANPI_APP_API_ALLOWED_DOMAINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
+      VANPI_APP_API_ENABLE_AUTHENTICATION: ${VANPI_APP_API_ENABLE_AUTHENTICATION}
+      VANPI_APP_API_USERNAME: ${VANPI_APP_API_USERNAME}
+      VANPI_APP_API_PASSWORD: ${VANPI_APP_API_PASSWORD}
+
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: always
+    command: tunnel run
+    network_mode: "host"
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt:latest
+    environment:
+      TZ: ${TZ:-Etc/UTC}
+      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://mosquitto:1883
+      ZIGBEE2MQTT_CONFIG_FRONTEND: "true"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_SYMLINK_CURRENT: "true"
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/${ZIGBEE_UDEV_KEY}
+      ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: deconz
+    ports:
+    - "8080:8080"
+    volumes:
+    - ./volumes/zigbee2mqtt/data:/app/data
+    devices:
+    - /dev/${ZIGBEE_UDEV_KEY}:/dev/${ZIGBEE_UDEV_KEY}
+    restart: unless-stopped
+    depends_on:
+    - mosquitto
