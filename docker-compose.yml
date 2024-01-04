@@ -58,10 +58,7 @@ services:
   vanpi-core-api:
     container_name: vanpi-core-api
     build:
-      context: ./services/nodered/.
-      args:
-      - DOCKERHUB_TAG=latest
-      - EXTRA_PACKAGES=bluez usbutils
+      context: ./services/vanpi-core-api/.
     restart: unless-stopped
     user: "0"
     network_mode: "host"
@@ -81,21 +78,23 @@ services:
     ports:
     - "1880:1880"
     devices:
-    - /dev/mem:/dev/mem
-    - /dev/gpiomem:/dev/gpiomem
-    - /dev/i2c-1:/dev/i2c-1
+    - /dev:/dev
+      #- /dev/mem:/dev/mem
+      # - /dev/gpiomem:/dev/gpiomem
+      #- /dev/i2c-1:/dev/i2c-1
     volumes:
-    - ./volumes/nodered/data:/data
-    - ./volumes/nodered/ssh:/root/.ssh
-    - ./volumes/nodered/scripts:/scripts
+    - ./volumes/vanpi-core-api/data:/data
+    - ./volumes/vanpi-core-api/ssh:/root/.ssh
+      # - ./volumes/vanpi-core-api/scripts:/scripts
+    - ./data/scripts:/scripts
     - /var/run/docker.sock:/var/run/docker.sock
     - /run/dbus:/run/dbus:ro
     - /sys:/sys
     - /dev:/dev
     - /lib/udev/rules.d:/lib/udev/rules.d
   
-  nodered_automation:
-    container_name: nodered_automation
+  vanpi-automation-api:
+    container_name: vanpi-automation-api
     image: nodered/node-red
     restart: unless-stopped
     user: "0"
@@ -108,13 +107,13 @@ services:
     ports:
     - "1881:1881"
     volumes:
-    - ./volumes/nodered/data:/data
-    - ./volumes/nodered/ssh:/root/.ssh
+    - ./volumes/vanpi-automation-api/data:/data
+    - ./volumes/vanpi-core-api/ssh:/root/.ssh
 
   mosquitto:
     container_name: mosquitto
     build:
-      context: ./.templates/mosquitto/.
+      context: ./services/mosquitto/.
       args:
       - MOSQUITTO_BASE=eclipse-mosquitto:latest
     restart: unless-stopped
@@ -129,7 +128,7 @@ services:
     - ./volumes/mosquitto/pwfile:/mosquitto/pwfilie
   
   mariadb:
-    build: ./.templates/mariadb/.
+    build: ./services/mariadb/.
     container_name: mariadb
     environment:
       TZ: ${TZ:-Etc/UTC}
