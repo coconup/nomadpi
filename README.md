@@ -20,23 +20,26 @@ This repo can be installed on a fresh installation of Raspbian OS (recommended L
     ./install.sh
     ```
     
-    This script installs `direnv`, Docker and Docker Compose.
+    This script installs `direnv`, Docker and Docker Compose. Reboot after running it.
 
-3.  Copy the example environment file and customize it according to your needs:
+3.  Clone dependencies into the `volumes` folder:
+
+    ```bash
+    mkdir volumes
+    cd volumes
+    clone https://github.com/coconup/vanpi-app-api.git
+    clone https://github.com/coconup/vanpi-react-api.git
+    ```
+
+4.  Copy the example environment file and customize it according to your needs:
     
     ```bash
     cp .envrc.example .envrc
     ```
     
-    Edit the `.envrc` file to set your desired configurations.
+    Edit the `.envrc` file to set your desired configurations. Don't forget to run `direnv allow` any time changes to `.envrc` are made.
     
-4.  If you choose to use `direnv` (recommended for managing environment variables), make sure to allow it in your shell:
-    
-    ```bash
-    direnv allow
-    ```
-    
-    
+
 5.  Start the VanPi services:
     
     ```bash
@@ -44,7 +47,12 @@ This repo can be installed on a fresh installation of Raspbian OS (recommended L
     ```
     
     This command will start all the defined services in the background.
-    
+
+6.  Navigate to the `vanpi-core-api` Node-Red interface and set up a new project, cloning this repository: https://github.com/coconup/vanpi-core-api.git
+
+    Install missing dependencies within Node-Red as requested.
+
+7.  Navigate to the `vanpi-automation-api` Node-Red interface and set up a new project, cloning this repository: https://github.com/coconup/vanpi-automation-api.git
 
 ## Services
 
