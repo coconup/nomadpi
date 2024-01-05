@@ -1,62 +1,45 @@
-
 # coding=utf-8
-# messprogramm.py
+import os
 
-#------------------------------------------------------------
- 
-import os, sys, time
- 
-# Global für vorhandene Temperatursensoren
-tempSensorBezeichnung = [] #Liste mit den einzelnen Sensoren-Kennungen
-tempSensorAnzahl = 0 #INT für die Anzahl der gelesenen Sensoren
-tempSensorWert = [] #Liste mit den einzelnen Sensor-Werten
- 
-# Global für Programmstatus / 
-programmStatus = 1 
- 
-def ds1820einlesen():
-    global tempSensorBezeichnung, tempSensorAnzahl, programmStatus
-    #Verzeichnisinhalt auslesen mit allen vorhandenen Sensorbezeichnungen 28-xxxx
+tempSensors = []
+tempReadings = []
+status = 1 
+
+def init():
+    global tempSensors, status
     try:
         for x in os.listdir("/sys/bus/w1/devices"):
             if (x.split("-")[0] == "28") or (x.split("-")[0] == "10"):
-                tempSensorBezeichnung.append(x)
-                tempSensorAnzahl = tempSensorAnzahl + 1
+                tempSensors.append(x)
     except:
         # Auslesefehler
         print ("Der Verzeichnisinhalt konnte nicht ausgelesen werden.")
-        programmStatus = 0
- 
-def ds1820auslesen():
-    global tempSensorBezeichnung, tempSensorAnzahl, tempSensorWert, programmStatus
+        status = 0
+
+def readValues():
+    global tempSensors, tempReadings, status
     x = 0
-    try:
-        # 1-wire Slave Dateien gem. der ermittelten Anzahl auslesen 
-        while x < tempSensorAnzahl:
-            dateiName = "/sys/bus/w1/devices/" + tempSensorBezeichnung[x] + "/w1_slave"
-            file = open(dateiName)
+    while x < len(tempSensors):
+        try:
+            filename = "/sys/bus/w1/devices/" + tempSensors[x] + "/w1_slave"
+            file = open(filename)
             filecontent = file.read()
             file.close()
-            # Temperaturwerte auslesen und konvertieren
-            stringvalue = filecontent.split("\n")[1].split(" ")[9]
-            sensorwert = float(stringvalue[2:]) / 1000
-            temperatur = '%6.2f' % sensorwert #Sensor- bzw. Temperaturwert auf 2 Dezimalstellen formatiert
-            tempSensorWert.insert(x,temperatur) #Wert in Liste aktualisieren
+            stringValue = filecontent.split("\n")[1].split(" ")[9]
+            floatValue = float(stringValue[2:]) / 1000
+            temperature = '%6.2f' % floatValue
+            tempReadings.insert(x, temperature)
             x = x + 1
-    except:
-        # Fehler bei Auslesung der Sensoren
-        print ("Die Auslesung der DS1820 Sensoren war nicht möglich.")
-        programmStatus = 0
- 
-#Programminitialisierung
-ds1820einlesen() #Anzahl und Bezeichnungen der vorhandenen Temperatursensoren einlesen
- 
-# Temperaturausgabe in Schleife
-while programmStatus == 1:
+        except:
+            tempReadings.insert(x, 'undefined')
+            x = x + 1
+
+init()
+
+while status == 1:
     x = 0
-    ds1820auslesen()
-    while x < tempSensorAnzahl:
-        print (x, " ",tempSensorWert[x] , " °C")
+    readValues()
+    while x < len(tempSensors):
+        print (x, " ", tempReadings[x], " °C")
         x = x + 1
-        programmStatus = 0
-           
+        status = 0
