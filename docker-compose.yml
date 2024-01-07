@@ -148,7 +148,8 @@ services:
 
   vanpi-react:
     container_name: vanpi-react
-    image: node:21-alpine
+    build:
+      context: ./services/vanpi-react
     command: sh -c "cd /usr/src/app && npm install && npm start"
     volumes:
     - ./volumes/vanpi-react:/usr/src/app
