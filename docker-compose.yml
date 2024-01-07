@@ -75,6 +75,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
+      HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
     ports:
     - "1880:1880"
     devices:
@@ -179,6 +180,39 @@ services:
       VANPI_APP_API_ENABLE_AUTHENTICATION: ${VANPI_APP_API_ENABLE_AUTHENTICATION}
       VANPI_APP_API_USERNAME: ${VANPI_APP_API_USERNAME}
       VANPI_APP_API_PASSWORD: ${VANPI_APP_API_PASSWORD}
+  
+  vanpi-mqtt-hub:
+    container_name: vanpi-mqtt-hub
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && node server.js"
+    volumes:
+    - ./volumes/vanpi-mqtt-hub/src:/usr/src/app
+    depends_on:
+    - mariadb
+    - mosquitto
+    restart: unless-stopped
+    environment:
+      MQTT_BROKER_URL: mqtt://mosquitto:1883
+      DB_HOST: mariadb
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_NAME}
+      HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
+  
+  vanpi-gpsd-to-mqtt:
+    container_name: vanpi-gpsd-to-mqtt
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && node server.js"
+    volumes:
+    - ./volumes/vanpi-gpsd-to-mqtt/src:/usr/src/app
+    depends_on:
+    - mosquitto
+    - gpsd
+    restart: unless-stopped
+    environment:
+      MQTT_BROKER: mqtt://mosquitto:1883
+      MQTT_TOPIC: ${GPSD_MQTT_TOPIC}
+      GPSD_HOST: gpsd
 
   tunnel:
     container_name: cloudflared-tunnel
