@@ -7,11 +7,12 @@ This repo can be installed on a fresh installation of Raspbian OS (recommended L
 
 ## Getting Started
 
-1.  Clone this repository:
+1.  Install Git and clone this repository:
     
     ```bash
-    git clone https://github.com/your-username/vanpi-docker-compose.git
-    cd vanpi-docker-compose
+    sudo apt-get install git
+    git clone git@github.com:coconup/vanpi-docker-stack.git
+    cd vanpi-docker-stack
     ```
 
 2.  Run the installation script to install dependencies:
@@ -25,16 +26,21 @@ This repo can be installed on a fresh installation of Raspbian OS (recommended L
 3.  Clone dependencies into the `volumes` folder:
 
     ```bash
+    cd ~/vanpi-docker-stack
     mkdir volumes
     cd volumes
-    clone https://github.com/coconup/vanpi-app-api.git
-    clone https://github.com/coconup/vanpi-react-api.git
+    git clone git@github.com:coconup/vanpi-app-api.git
+    git clone git@github.com:coconup/vanpi-react.git
+    git clone git@github.com:coconup/vanpi-mqtt-hub.git
+    git clone git@github.com:coconup/vanpi-gpsd-to-mqtt.git
     ```
 
 4.  Copy the example environment file and customize it according to your needs:
     
     ```bash
+    cd ~/vanpi-docker-stack
     cp .envrc.example .envrc
+    vim .envrc
     ```
     
     Edit the `.envrc` file to set your desired configurations. Don't forget to run `direnv allow` any time changes to `.envrc` are made.
