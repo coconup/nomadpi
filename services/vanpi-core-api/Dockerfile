@@ -80,7 +80,7 @@ COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
 
 # Renogy BT Python library
 RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \
-    python3 -m pip install -r /lib/renogy-bt/requirements.txt
+    python3 -m pip3 install -r /lib/renogy-bt/requirements.txt
 
 # Chown, install devtools & Clean up
 RUN chown -R node-red:root /usr/src/node-red && \
