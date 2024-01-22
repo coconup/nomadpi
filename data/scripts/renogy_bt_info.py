@@ -15,12 +15,13 @@ from renogybt import InverterClient, RoverClient, RoverHistoryClient, BatteryCli
 
 parser = argparse.ArgumentParser(description="Retrieves data from Renogy / SRNE MPPT controllers and prints it as JSON")
 parser.add_argument("-d", "--device", dest="device", help="Specify remote Bluetooth address", metavar="MAC", required=True)
-parser.add_argument("-v", "--verbose", dest="verbose", help="Verbosity", action='count', default=0)
+parser.add_argument("-m", "--mode", dest="mode", help="Mode: history or status (default)", default="status")
 args = parser.parse_args()
 
 config = configparser.ConfigParser()
+device_type = "RNG_CTRL" if args.mode == "status" else "RNG_CTRL_HIST"
 
-config['device'] = {"adapter": "hci0", "alias": "", "mac_addr": args.device, "type": "RNG_CTRL", "device_id": "255"}
+config['device'] = {"adapter": "hci0", "alias": "", "mac_addr": args.device, "type": device_type, "device_id": "255"}
 config['data'] = {"temperature_unit": "C", "fields": ""}
 config['remote_logging'] = {}
 config['mqtt'] = {}
@@ -32,4 +33,7 @@ def on_data_received(client, data):
   client.disconnect()
   return filtered_data
 
-RoverClient(config, on_data_received).connect()
+if args.mode == "status":
+    RoverClient(config, on_data_received).connect()
+elif args.mode == "history":
+    RoverHistoryClient(config, on_data_received).connect()
