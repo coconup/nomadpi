@@ -10,7 +10,7 @@ BYTE_ORDER='big'
 RESPONSE_HEADER_SIZE = 4
 EOR_SIZE = 3
 
-parser = argparse.ArgumentParser(description="Retrieve values from JBD BMS and print as JSON")
+parser = argparse.ArgumentParser(description="Retrieves data from JBD BMS and prints it as JSON")
 parser.add_argument("-d", "--device", dest="device", help="Specify remote Bluetooth address", metavar="MAC", required=True)
 parser.add_argument("-v", "--verbose", dest="verbose", help="Verbosity", action='count', default=0)
 args = parser.parse_args()
