@@ -83,14 +83,14 @@ RUN chown -R node-red:root /usr/src/node-red && \
     apt-get update && apt-get install -y build-essential libdbus-glib-1-dev libgirepository1.0-dev python3-dev python3 python3-pip pipx bluez usbutils && \
     rm -r /tmp/*
 
-# Renogy BT Python library
-RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \
-    python3 -m pip3 install -r /lib/renogy-bt/requirements.txt
-
 RUN npm config set cache /data/.npm --global
 
 RUN rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 RUN pip3 install argparse pexpect
+
+# Renogy BT Python library
+RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \
+    python3 -m pip3 install -r /lib/renogy-bt/requirements.txt
 
 USER node-red
 
