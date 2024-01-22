@@ -49,7 +49,7 @@ COPY scripts/entrypoint.sh .
 FROM base AS build
 
 # Install Build tools
-RUN apt-get update && apt-get install -y build-essential libdbus-glib-1-dev libgirepository1.0-dev python3-pip && \
+RUN apt-get update && apt-get install -y build-essential python3-pip && \
     npm install --unsafe-perm --no-update-notifier --no-fund --only=production && \
     npm uninstall node-red-node-gpio && \
     cp -R node_modules prod_node_modules
@@ -80,12 +80,12 @@ COPY --from=build /usr/src/node-red/prod_node_modules ./node_modules
 
 # Chown, install devtools & Clean up
 RUN chown -R node-red:root /usr/src/node-red && \
-    apt-get update && apt-get install -y build-essential python3-dev python3 python3-pip pipx bluez usbutils && \
+    apt-get update && apt-get install -y build-essential libdbus-glib-1-dev libgirepository1.0-dev python3-dev python3 python3-pip pipx bluez usbutils && \
     rm -r /tmp/*
 
 # Renogy BT Python library
 RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \
-    python3 -m pip3 install -r /lib/renogy-bt/requirements.txt
+    python3 -m pip install -r /lib/renogy-bt/requirements.txt
 
 RUN npm config set cache /data/.npm --global
 
