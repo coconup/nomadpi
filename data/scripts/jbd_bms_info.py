@@ -1,194 +1,155 @@
 #!/usr/bin/env python3
 
-# LIONTRON LX Smart BMS 12,8V 100Ah - bought 2021
-# Get Values from BMS and print as JSON
-#
-# Issues:
-# Sometimes the connections does not work "connect error: Function not implemented (38)" : dont know why
-# Sometimes there are no values "Characteristic value was written successfully" : dont know why
-# Sometimes the connections does not work without any error : there might be another client connected
-# "Device or resource busy" : there might be still an open connection on the client, restart your bluetooth if you can't find it
-#
-# request bytes: header (two bytes), command (two bytes), checksum (two bytes), EOR (one byte b'77')
-# response bytes: header (two bytes), lenght in bytes (two bytes), data, checksum (two bytes), EOR (one byte b'77')
-#
-# Unused Data Bytes Request 1 (unsure if correct):  10,11:proddate; 12-15:balance status; 18:software version; 20:mosfet status; 21:cell count; 22:ntc count
-
 import argparse
 import pexpect
 import json
 
-# Command line parameters
-parser = argparse.ArgumentParser()
-parser.add_argument("-d", "--device", dest = "device", help="Specify remote Bluetooth address", metavar="MAC", required=True)
-parser.add_argument("-v", "--verbose", dest = "v", help="Verbosity", action='count', default=0)
+# Constants
+MAX_ATTEMPTS = 10
+BYTE_ORDER='big'
+RESPONSE_HEADER_SIZE = 4
+EOR_SIZE = 3
+
+parser = argparse.ArgumentParser(description="Retrieve values from JBD BMS and print as JSON")
+parser.add_argument("-d", "--device", dest="device", help="Specify remote Bluetooth address", metavar="MAC", required=True)
+parser.add_argument("-v", "--verbose", dest="verbose", help="Verbosity", action='count', default=0)
 args = parser.parse_args()
 
+def parse_bytes(value, signed):
+    return int.from_bytes(value, byteorder=BYTE_ORDER, signed=signed)
+
+def get_protection_state_text(state):
+    binary_state = format(state, '016b')
+    if binary_state[0] == "1": return "cell_over_voltage" 
+    if binary_state[1] == "1": return "cell_under_voltage" 
+    if binary_state[2] == "1": return "battery_over_voltage" 
+    if binary_state[3] == "1": return "battery_under_voltage"
+    if binary_state[4] == "1": return "charging_over_temperature" 
+    if binary_state[5] == "1": return "charging_low_temperature" 
+    if binary_state[6] == "1": return "discharging_over_temperature" 
+    if binary_state[7] == "1": return "discharging_low_temperature" 
+    if binary_state[8] == "1": return "charging_over_current" 
+    if binary_state[9] == "1": return "discharging_over_current" 
+    if binary_state[10] == "1": return "short_circuit" 
+    if binary_state[11] == "1": return "fore_end_ic_error" 
+    if binary_state[12] == "1": return "mos_software_lock_in"
+    return "ok"
+
 # Run gatttool interactively.
-child = pexpect.spawn("gatttool -I -b {0}".format(args.device))
+child = pexpect.spawn(f"gatttool -I -b {args.device}")
 
 # Connect to the device
-for attempt in range(10):
+for attempt in range(MAX_ATTEMPTS):
     try:
-        if args.v: print("BMS connecting (Try:", attempt+1, ")")
+        if args.verbose: print(f"BMS connecting (Try: {attempt + 1})")
         child.sendline("connect")
         child.expect("Connection successful", timeout=1)
     except pexpect.TIMEOUT:
-        if args.v==2: print(child.before)
+        if args.verbose == 2: print(child.before)
         continue
     else:
-        if args.v: print("BMS connection successful")
+        if args.verbose: print("BMS connection successful")
         break
 else:
-    if args.v: print ("BMS Connect timeout! Exit")
+    if args.verbose: print ("BMS Connect timeout! Exit")
     child.sendline("exit")
-    print ("{}")
+    print("{}")
     exit()    
 
-# Request data until data is recieved or max attempt is reached
-# Voltage and other information
-for attempt in range(10):
-    try:
-        resp=b''
-        if args.v: print("BMS requesting data 1 (Try:", attempt+1, ")")
-        child.sendline("char-write-req 0x0015 dda50300fffd77")
-        child.expect("Notification handle = 0x0011 value: ", timeout=1)
-        child.expect("\r\n", timeout=0)
-        if args.v: print("BMS received data 1")
-        if args.v==2: print("BMS answer 1: ", child.before)
-        resp+=child.before
-        child.expect("Notification handle = 0x0011 value: ", timeout=1)
-        child.expect("\r\n", timeout=0)
-        if args.v==2: print("BMS answer 2: ", child.before)
-        resp+=child.before
-    except pexpect.TIMEOUT:
-        continue
-    else:
-        break
-else:
-    resp=b''
-    if args.v: print ("BMS Answering timeout!")
-    if args.v==2: print(child.before)
+# Define data formats
+commands = {
+    "data1": {
+        "command": "dda50300fffd77",
+        "answers": 2
+    },
+    "data2": {
+        "command": "dda50400fffc77",
+        "answers": 1
+    },
+    "data3": {
+        "command": "dda50500fffb77",
+        "answers": 1
+    }
+}
 
-# Request data until data is recieved or max attempt is reached
-# individual cell voltages. Each voltage is a 16 bit number
-for attempt in range(10):
-    try:
-        resp2=b''
-        if args.v: print("BMS requesting data 2 (Try:", attempt+1, ")")
-        child.sendline("char-write-req 0x0015 dda50400fffc77")
-        child.expect("Notification handle = 0x0011 value: ", timeout=1)
-        child.expect("\r\n", timeout=0)
-        if args.v: print("BMS received data 2")
-        if args.v==2: print("BMS answer 1: ", child.before)
-        resp2+=child.before
-    except pexpect.TIMEOUT:
-        continue
+# Request and process data
+raw_data = {}
+for data_name, spec in commands.items():
+    command = spec['command']
+    for attempt in range(MAX_ATTEMPTS):
+        try:
+            response = b''
+            if args.verbose: print(f"BMS requesting {data_name} (Try: {attempt + 1})")
+            cmd = f"char-write-req 0x0015 {command}"
+            if args.verbose == 2: print(f"BMS command {data_name}:", cmd)
+            child.sendline(cmd)
+            for answer_nr in range(spec['answers']):
+                child.expect("Notification handle = 0x0011 value: ", timeout=1)
+                child.expect("\r\n", timeout=0)
+                if args.verbose: print(f"BMS received {data_name}")
+                if args.verbose == 2: print(f"BMS answer {data_name} {answer_nr}:", child.before)
+                response += child.before
+        except pexpect.TIMEOUT:
+            continue
+        else:
+            break
     else:
-        break
-else:
-    resp2=b''
-    if args.v: print ("BMS Answering timeout!")
-    if args.v==2: print(child.before)
+        response = b''
+        if args.verbose: print(f"BMS {data_name} timeout!")
+        if args.verbose == 2: print(child.before)
 
-# Request data until data is recieved or max attempt is reached
-# BMS Name in ASCII
-for attempt in range(10):
-    try:
-        resp3=b''
-        if args.v: print("BMS requesting data 3 (Try:", attempt+1, ")")
-        child.sendline("char-write-req 0x0015 dda50500fffb77")
-        child.expect("Notification handle = 0x0011 value: ", timeout=1)
-        child.expect("\r\n", timeout=0)
-        if args.v: print("BMS received data 3")
-        if args.v==2: print("BMS answer 1: ", child.before)
-        resp3+=child.before
-    except pexpect.TIMEOUT:
-        continue
-    else:
-        break
-else:
-    resp3=b''
-    if args.v: print ("BMS Answering timeout!")
-    if args.v==2: print(child.before)
+    if args.verbose == 2: print(f"BMS response {data_name}:", response)
+    if response:
+        raw_data[data_name] = response[:-1]
 
 # Close connection
-if args.v: print("BMS disconnecting")
+if args.verbose: print("Raw data: ", raw_data)
+if args.verbose: print("BMS disconnecting")
 child.sendline("disconnect")
 child.sendline("exit")
 
-# Build JSON
-#BMS answering 1:  b'dd 03 00 1b 05 28 00 00 1b b2 2a ef 00 02 29 0a 00 00 00 00 '
-#BMS answering 2:  b'00 00 25 41 03 04 02 0b 74 0b 6b fc 39 77 '
-#BMS answering 1:  b'dd 04 00 08 0c e5 0c e3 0c e5 0c e8 fc 33 77 '
+# Process and print JSON
+processed_data = {}
+for data_name, response in raw_data.items():
+    processed_data[data_name] = bytearray.fromhex(response.decode())
 
-if args.v: print("Response 1:", resp)
-if args.v: print("Response 2:", resp2)
-if args.v: print("Response 3:", resp3)
+if args.verbose == 2: print(f"BMS processed_data:", processed_data)
 
-resp = resp[:-1]
-resp2 = resp2[:-1]
-resp3 = resp3[:-1]
+data = {
+    "voltage": {},
+    "capacity": {}
+}
 
-response=bytearray.fromhex(resp.decode())
-response2=bytearray.fromhex(resp2.decode())
-response3=bytearray.fromhex(resp3.decode())
+# Extract and format specific values
+if "data1" in processed_data:
+    response = processed_data["data1"]
+    if response.endswith(b'w'):
+        response = response[RESPONSE_HEADER_SIZE:]
+        data['voltage']['total'] = parse_bytes(response[0:2], True) / 100.0
+        data['current_load'] = parse_bytes(response[2:4], True) / 100.0
+        data['capacity']['remaining'] = parse_bytes(response[4:6], True) / 100.0
+        data['capacity']['total'] = parse_bytes(response[6:8], True) / 100.0
+        data['cycles_count'] = parse_bytes(response[8:10], True)
+        data['protect_state'] = get_protection_state_text(parse_bytes(response[16:18], False))
+        data['state_of_charge'] = parse_bytes(response[19:20], False)
+        data['temperature_1'] = (parse_bytes(response[23:25], True) - 2731) / 10.0
+        data['temperature_2'] = (parse_bytes(response[25:27], True) - 2731) / 10.0
 
-rawdat={}
-if (response.endswith(b'w')) and (response.startswith(b'\xdd\x03')):
-    response=response[4:]
+# Extract cell voltages
+if "data2" in processed_data:
+    response = processed_data["data2"]
+    if response.endswith(b'w'):
+        response = response[RESPONSE_HEADER_SIZE:-EOR_SIZE]
+        cells_count = len(response) // 2
+        if args.verbose == 2: print("Detected Cellcount:", cells_count)
+        data['voltage']['cells'] = [int.from_bytes(response[cell * 2:cell * 2 + 2], byteorder=BYTE_ORDER, signed=True) / 1000.0 for cell in range(cells_count)]
+        data['cells_count'] = cells_count
 
-    rawdat['Vmain']=int.from_bytes(response[0:2], byteorder = 'big',signed=True)/100.0 #total voltage [V]
-    rawdat['Imain']=int.from_bytes(response[2:4], byteorder = 'big',signed=True)/100.0 #current [A]
-    rawdat['RemainAh']=int.from_bytes(response[4:6], byteorder = 'big',signed=True)/100.0 #remaining capacity [Ah]
-    rawdat['NominalAh']=int.from_bytes(response[6:8], byteorder = 'big',signed=True)/100.0 #nominal capacity [Ah]
-    rawdat['NumberCycles']=int.from_bytes(response[8:10], byteorder = 'big',signed=True) #number of cycles
-    rawdat['ProtectState']=int.from_bytes(response[16:18],byteorder = 'big',signed=False) #protection state
-    rawdat['ProtectStateBin']=format(rawdat['ProtectState'], '016b') #protection state binary
-    rawdat['SoC']=int.from_bytes(response[19:20],byteorder = 'big',signed=False) #remaining capacity [%]
-    rawdat['TempC1']=(int.from_bytes(response[23:25],byteorder = 'big',signed=True)-2731)/10.0
-    rawdat['TempC2']=(int.from_bytes(response[25:27],byteorder = 'big',signed=True)-2731)/10.0
-
-    if (rawdat['ProtectStateBin'][0:13]) == '0000000000000':
-        rawdat['ProtectStateText']="ok";
-    if (rawdat['ProtectStateBin'][0]) == "1":
-        rawdat['ProtectStateText']="CellBlockOverVolt";
-    if (rawdat['ProtectStateBin'][1]) == "1":
-        rawdat['ProtectStateText']="CellBlockUnderVol";
-    if (rawdat['ProtectStateBin'][2]) == "1":
-        rawdat['ProtectStateText']="BatteryOverVol";
-    if (rawdat['ProtectStateBin'][3]) == "1":
-        rawdat['ProtectStateText']="BatteryUnderVol";
-    if (rawdat['ProtectStateBin'][4]) == "1":
-        rawdat['ProtectStateText']="ChargingOverTemp";
-    if (rawdat['ProtectStateBin'][5]) == "1":
-        rawdat['ProtectStateText']="ChargingLowTemp";
-    if (rawdat['ProtectStateBin'][6]) == "1":
-        rawdat['ProtectStateText']="DischargingOverTemp";
-    if (rawdat['ProtectStateBin'][7]) == "1":
-        rawdat['ProtectStateText']="DischargingLowTemp";
-    if (rawdat['ProtectStateBin'][8]) == "1":
-        rawdat['ProtectStateText']="ChargingOverCurrent";
-    if (rawdat['ProtectStateBin'][9]) == "1":
-        rawdat['ProtectStateText']="DischargingOverCurrent"; 
-    if (rawdat['ProtectStateBin'][10]) == "1":
-        rawdat['ProtectStateText']="ShortCircuit";
-    if (rawdat['ProtectStateBin'][11]) == "1":
-        rawdat['ProtectStateText']="ForeEndICError";
-    if (rawdat['ProtectStateBin'][12]) == "1":
-        rawdat['ProtectStateText']="MOSSoftwareLockIn";
-
-if (response2.endswith(b'w')) and (response2.startswith(b'\xdd\x04')):
-    response2=response2[4:-3]
-    cellcount=len(response2)//2
-    if args.v==2: print ("Detected Cellcount: ",cellcount)
-    for cell in range(cellcount):
-        #print ("Cell:",cell+1,"from byte",cell*2,"to",cell*2+2)
-        rawdat['Vcell'+str(cell+1)]=int.from_bytes(response2[cell*2:cell*2+2], byteorder = 'big',signed=True)/1000.0
-
-if (response3.endswith(b'w')) and (response3.startswith(b'\xdd\x05')):
-    response3=response3[4:-3]
-    rawdat['Name']=response3.decode("ASCII")
+# Extract BMS Name
+if "data3" in processed_data:
+    response = processed_data["data3"]
+    if response.endswith(b'w'):
+        data['name'] = response[RESPONSE_HEADER_SIZE:-EOR_SIZE].decode("ASCII")
 
 # Print JSON
-print (json.dumps(rawdat, indent=1, sort_keys=False))
+print(json.dumps(data, indent=1, sort_keys=False))
