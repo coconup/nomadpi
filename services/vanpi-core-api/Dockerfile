@@ -49,7 +49,7 @@ COPY scripts/entrypoint.sh .
 FROM base AS build
 
 # Install Build tools
-RUN apt-get update && apt-get install -y build-essential python3-pip && \
+RUN apt-get update && apt-get install -y build-essential libdbus-glib-1-dev libgirepository1.0-dev python3-pip && \
     npm install --unsafe-perm --no-update-notifier --no-fund --only=production && \
     npm uninstall node-red-node-gpio && \
     cp -R node_modules prod_node_modules

@@ -168,10 +168,9 @@ services:
     depends_on:
     - mariadb
     restart: unless-stopped
-    network_mode: "host"
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      DB_HOST: "127.0.0.1"
+      DB_HOST: mariadb
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
@@ -181,6 +180,26 @@ services:
       VANPI_APP_API_ENABLE_AUTHENTICATION: ${VANPI_APP_API_ENABLE_AUTHENTICATION}
       VANPI_APP_API_USERNAME: ${VANPI_APP_API_USERNAME}
       VANPI_APP_API_PASSWORD: ${VANPI_APP_API_PASSWORD}
+  
+  vanpi-services-api:
+    container_name: vanpi-services-api
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && node server.js"
+    volumes:
+    - ./volumes/vanpi-services-api:/usr/src/app
+    ports:
+    - "3002:3000"
+    depends_on:
+    - mariadb
+    - vanpi-app-api
+    restart: unless-stopped
+    environment:
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DB_HOST: mariadb
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      ALLOWED_ORIGINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
   
   vanpi-mqtt-hub:
     container_name: vanpi-mqtt-hub

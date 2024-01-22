@@ -1,2 +1,4 @@
+**/.DS_Store
 volumes
 .envrc
+docker-compose-override.yml
