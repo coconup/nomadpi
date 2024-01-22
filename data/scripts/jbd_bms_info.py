@@ -79,7 +79,7 @@ for data_name, spec in commands.items():
     for attempt in range(MAX_ATTEMPTS):
         try:
             response = b''
-            if args.verbose: print(f"BMS requesting {data_name} (Try: {attempt + 1})")
+            if args.verbose: print(f"BMS requesting {data_name} (attempt {attempt + 1})")
             cmd = f"char-write-req 0x0015 {command}"
             if args.verbose == 2: print(f"BMS command {data_name}:", cmd)
             child.sendline(cmd)

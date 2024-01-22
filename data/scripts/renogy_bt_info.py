@@ -2,7 +2,10 @@ import os
 import sys
 import configparser
 import argparse
+import json
 
+# Constants
+MAX_ATTEMPTS = 10
 RENOGY_BT_PATH = '/lib/renogy-bt';
 
 if not os.path.isfile(f"{RENOGY_BT_PATH}/renogybt/__init__.py"):
@@ -33,4 +36,13 @@ def on_data_received(client, data):
   client.disconnect()
   return filtered_data
 
-RoverClient(config, on_data_received).connect()
+success = False
+
+for attempt in range(MAX_ATTEMPTS):
+	try:
+        if args.verbose: print(f"MPPT connecting (attempt {attempt + 1})")
+        RoverClient(config, on_data_received).connect()
+        success = True
+        break
+    except Exception as e:
+        if args.verbose: print(f"Attempt {attempt + 1} failed: {e}")
