@@ -90,7 +90,7 @@ RUN pip3 install argparse pexpect
 
 # Renogy BT Python library
 RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \
-    python3 -m pip3 install -r /lib/renogy-bt/requirements.txt
+    pip3 install -r /lib/renogy-bt/requirements.txt
 
 USER node-red
 
