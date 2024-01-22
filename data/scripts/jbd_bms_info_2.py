@@ -84,11 +84,13 @@ for data_name, data_format in data_formats.items():
         response = b''
         if args.verbose: print(f"BMS {data_name} timeout!")
         if args.verbose == 2: print(child.before)
-    response = extract_values(response, data_format)
-    if response:
-        raw_data[data_name] = response
+
+response = extract_values(response, data_format)
+if response:
+    raw_data[data_name] = response
 
 # Close connection
+if args.verbose: print("Response: ", response)
 if args.verbose: print("BMS disconnecting")
 child.sendline("disconnect")
 child.sendline("exit")
