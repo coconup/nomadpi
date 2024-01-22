@@ -30,6 +30,7 @@ This repo can be installed on a fresh installation of Raspbian OS (recommended L
     mkdir volumes
     cd volumes
     git clone git@github.com:coconup/vanpi-app-api.git
+    git clone git@github.com:coconup/vanpi-services-api.git
     git clone git@github.com:coconup/vanpi-react.git
     git clone git@github.com:coconup/vanpi-mqtt-hub.git
     git clone git@github.com:coconup/vanpi-gpsd-to-mqtt.git
