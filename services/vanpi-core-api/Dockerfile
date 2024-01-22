@@ -85,7 +85,7 @@ RUN chown -R node-red:root /usr/src/node-red && \
 
 # Renogy BT Python library
 RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \
-    python3 -m pip install -r /lib/renogy-bt/requirements.txt
+    python3 -m pip3 install -r /lib/renogy-bt/requirements.txt
 
 RUN npm config set cache /data/.npm --global
 
