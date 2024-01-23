@@ -75,6 +75,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
+      MICROPHONE_UDEV_KEY: ${MICROPHONE_UDEV_KEY}
       HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
     ports:
     - "1880:1880"
@@ -160,6 +161,7 @@ services:
   vanpi-app-api:
     container_name: vanpi-app-api
     image: node:21-alpine
+    network_mode: "host"
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
     - ./volumes/vanpi-app-api/src:/usr/src/app
