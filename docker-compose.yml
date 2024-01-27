@@ -172,7 +172,7 @@ services:
     restart: unless-stopped
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      DB_HOST: mariadb
+      DB_HOST: "127.0.0.1"
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
@@ -235,6 +235,46 @@ services:
       MQTT_BROKER: mqtt://mosquitto:1883
       MQTT_TOPIC: ${GPSD_MQTT_TOPIC}
       GPSD_HOST: gpsd
+  
+  influxdb:
+    container_name: influxdb
+    image: "influxdb:1.8"
+    restart: unless-stopped
+    ports:
+    - "8086:8086"
+    environment:
+    - TZ=Etc/UTC
+    - INFLUXDB_DB=defaultdb
+    - INFLUXDB_HTTP_FLUX_ENABLED=true
+    - INFLUXDB_REPORTING_DISABLED=false
+    - INFLUXDB_HTTP_AUTH_ENABLED=false
+    - INFLUXDB_MONITOR_STORE_ENABLED=FALSE
+  # - INFLUX_USERNAME=dba
+  # - INFLUX_PASSWORD=supremo
+  # - INFLUXDB_UDP_ENABLED=false
+  # - INFLUXDB_UDP_BIND_ADDRESS=0.0.0.0:8086
+  # - INFLUXDB_UDP_DATABASE=udp
+    volumes:
+    - ./volumes/influxdb/data:/var/lib/influxdb
+    - ./backups/influxdb/db:/var/lib/influxdb/backup
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8086"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+  
+  vanpi-open-wake-word:
+    container_name: vanpi-open-wake-word
+      #image: inoukim/onnxruntime
+    build:
+      context: ./services/vanpi-open-wake-word
+    volumes:
+    - ./volumes/vanpi-open-wake-word:/app
+    command: sh -c "python3 streaming_server.py --model_path=./ok_vanpi.onnx --inference_framework=onnx"
+    ports:
+    - "9002:9002"
+    restart: unless-stopped
 
   tunnel:
     container_name: cloudflared-tunnel
