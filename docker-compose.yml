@@ -177,6 +177,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       AUTOMATION_API_ROOT_URL: "http://127.0.0.1:1881/api/v1"
+      BUTTERFLY_API_ROOT_URL: "http://127.0.0.1:3005"
+      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
       VANPI_API_ROOT_URL: ${VANPI_API_ROOT_URL}
       VANPI_APP_API_ALLOWED_DOMAINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
       VANPI_APP_API_ENABLE_AUTHENTICATION: ${VANPI_APP_API_ENABLE_AUTHENTICATION}
@@ -235,7 +237,22 @@ services:
       MQTT_BROKER: mqtt://mosquitto:1883
       MQTT_TOPIC: ${GPSD_MQTT_TOPIC}
       GPSD_HOST: gpsd
-  
+ 
+  vanpi-butterfly-ai:
+    container_name: vanpi-butterfly-ai
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && node server.js"
+    network_mode: host
+    volumes:
+    - ./volumes/butterfly:/usr/src/app
+    restart: unless-stopped
+    environment:
+      DEBUG: 1
+      PORT: "3005"
+      OPEN_AI_API_KEY: ${OPEN_AI_API_KEY}
+      OPEN_WEATHER_MAP_API_KEY: ${OPEN_WEATHER_MAP_API_KEY}
+      ALLOWED_ORIGINS: "http://127.0.0.1:3001,http://localhost:3000"
+
   influxdb:
     container_name: influxdb
     image: "influxdb:1.8"
@@ -266,7 +283,7 @@ services:
   
   vanpi-open-wake-word:
     container_name: vanpi-open-wake-word
-      #image: inoukim/onnxruntime
+    network_mode: host
     build:
       context: ./services/vanpi-open-wake-word
     volumes:
