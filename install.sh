@@ -7,6 +7,16 @@ sudo apt install -y \
     vim \
     direnv
 
+echo 'Cloning VanPi stack repositories'
+mkdir volumes
+git clone git@github.com:coconup/vanpi-app-api.git volumes/vanpi-app-api
+git clone git@github.com:coconup/vanpi-services-api.git volumes/vanpi-services-api
+git clone git@github.com:coconup/vanpi-react.git volumes/vanpi-react
+git clone git@github.com:coconup/vanpi-mqtt-hub.git volumes/vanpi-mqtt-hub
+git clone git@github.com:coconup/vanpi-gpsd-to-mqtt.git volumes/vanpi-gpsd-to-mqtt
+git clone git@github.com:coconup/vanpi-butterfly-ai volumes/vanpi-butterfly-ai
+git clone git@github.com:coconup/vanpi-open-wake-word volumes/vanpi-open-wake-word
+
 # Add direnv to .bashrc
 echo 'Setting up `direnv``'
 echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
