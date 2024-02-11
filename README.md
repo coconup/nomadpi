@@ -2,7 +2,7 @@
 
 This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, motorhome or tiny house. It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can also be installed and run on any Raspberry Pi.
 
-![dashboard](https://ibb.co/271drwv)
+![dashboard](https://i.ibb.co/8NYhQg7/vanpi-dashboard.png)
 
 ## Main features
 
