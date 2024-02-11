@@ -59,6 +59,7 @@ Here is a list of currently supported devices and affiliate links for where to p
 #### Raspberry Pi
 
 Model | Purchase links
+--- | ---
 Raspberry Pi 5 8gb | [link](https://www.ebay.de/itm/266600494811?mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
 Raspberry Pi 4 8gb | [link](https://www.amazon.de/-/en/Raspberry-Model-ARM-8GB-Linux/dp/B09TTKT94J?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=2c621d09af30d8b8cf537f56365a8798&camp=1638&creative=6742)
 
