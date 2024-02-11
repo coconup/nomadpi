@@ -1,6 +1,8 @@
 # VanPi Docker Stack
 
-This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, motorhome or tiny house. It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can also be installed and run independently.
+This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, motorhome or tiny house. 
+
+It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can also be installed and run independently.
 
 ![dashboard](https://i.ibb.co/ZG2ZbzM/vanpi-dashboard.png)
 
@@ -150,7 +152,9 @@ Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-
 
 7.  Navigate to the `vanpi-automation-api` Node-Red interface and set up a new project, cloning this repository: https://github.com/coconup/vanpi-automation-api.git
 
-## Services
+## Services and resources
+
+#### Core services
 
   - **VanPi React**: React-based frontend ([GitHub project](https://github.com/coconup/vanpi-react)). Access it at http://raspberrypi.local:3000.
 
@@ -165,7 +169,7 @@ Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-
   - **VanPi App API**: Node.js API serving the React application ([GitHub project](https://github.com/coconup/vanpi-app-api)). Access it at http://raspberrypi.local:3001.
     
 
-## Additional Services
+#### Additional Services
     
   - **GPSD**: GPS daemon container.
     
@@ -179,14 +183,10 @@ Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-
     
   - **Nextcloud client**: Client for backing up your data onto a remote Nextcloud installation.
     
+## Supporting the project
 
-## Notes
+If you feel like it, you can financially support the project in one of these ways:
 
-  - Make sure to customize the environment variables in the `.envrc` file for your specific setup.
-    
-  - Check individual service configurations in the `docker-compose.yml` file for further customization.
-    
-  - Use the provided `install.sh` script to install Docker and Docker Compose automatically.
-    
-
-Feel free to explore, modify, and extend this setup according to your specific needs. If you encounter any issues or have suggestions, please create an issue in this repository.
+- Make a monthly contribution through [Patreon](https://www.patreon.com/vanautomation)
+- Make a one-time donation via [Paypal](https://www.paypal.com/donate/?hosted_button_id=FPWJT97N4PFGY)
+- Purchase supported hardware through the [affiliate links above](https://github.com/coconup/vanpi-docker-stack?tab=readme-ov-file#supported-hardware)
