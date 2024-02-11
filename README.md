@@ -72,8 +72,6 @@ Liontron | LiFePo4 batteries with bluetooth connection | - [100Ah](https://www.e
 
 #### Solar chargers
 
-Check out [this article](https://coconup.medium.com/lithium-on-the-cheap-build-a-12v-280ah-3-4kwh-lifepo4-battery-for-less-than-600-ecce00dd1bbd) about building your own battery for a budget, compatible with the supported BMS below.
-
 Vendor | Description | Purchase links
 --- | --- | ---
 Renogy | MPPT (+ DC/DC) chargers with bluetooth connection | - [50A MPPT+DC/DC](https://www.amazon.de/-/en/gp/product/B07SJGLGY8/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=8395a1bdf3ad4673341546cc27f4cf27&camp=1638&creative=6742)<br>- [BT-2 Adapter](https://www.amazon.de/-/en/Renogy-BT-2-Bluetooth-Module/dp/B084Q1V7KZ?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=b28619be77887bed59752bce5334ccb3&camp=1638&creative=6742)
