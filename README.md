@@ -6,47 +6,37 @@ This is a software stack designed to run on the Raspberry Pi that lets you contr
 
 ## Main features
 
-Here is a list of the main features of the software stack.
+Here is a list of the main features of the stack.
 
-#### Relays and WiFi relays
+- #### Relays and WiFi relays
+  Control any relay and wifi relay, organize your control panel and map single buttons to multiple switches.
 
-Control any relay and wifi relay, organize your control panel and map single buttons to multiple switches.
+- #### Batteries
+  Monitor the state of charge, current load and remaining capacity of your battery bank.
 
-#### Batteries
+- #### Water tanks
+  Monitor the level of your tanks (fresh water, grey water etc.).
 
-Monitor the state of charge, current load and remaining capacity of your battery bank.
+- #### Heater and thermostat
+  Control your heater through a smart thermostat, set the desired temperature and the timer on which it should run.
 
-#### Water tanks
+- #### Solar chargers
+  Monitor the state of your solar charge controller, including generated power and charging status.
 
-Monitor the level of your tanks (fresh water, grey water etc.).
+- #### Security cameras and alarm
+  Install an AI-powered surveillance system and set up rules to trigger an alarm while you are away, powered by [Frigate](https://frigate.video/).
 
-#### Heater and thermostat
+- #### GPS tracking
+  Monitor the current position of your van and its travel history.
+  
+- #### Remote access
+  Check on the status of your system and control it from anywhere in the world through a [Cloudflare](https://cloudflare.com/) tunnel.
+  
+- #### Cloud backup
+  Setup your own [Nextcloud](https://nextcloud.com/) cloud where files from your system are synced (including surveillance videos) in order to have full access even if the system goes offline.
 
-Control your heater through a smart thermostat, set the desired temperature and the timer on which it should run.
-
-#### Solar chargers
-
-Monitor the state of your solar charge controller, including generated power and charging status.
-
-#### Security cameras and alarm
-
-Install an AI-powered surveillance system and set up rules to trigger an alarm while you are away, powered by [Frigate](https://frigate.video/).
-
-#### GPS tracking
-
-Monitor the current position of your van and its travel history.
-
-#### Remote access
-
-Check on the status of your system and control it from anywhere in the world through a [Cloudflare](https://cloudflare.com/) tunnel.
-
-#### Cloud backup
-
-Setup your own [Nextcloud](https://nextcloud.com/) cloud where files from your system are synced (including surveillance videos) in order to have full access even if the system goes offline.
-
-#### Integrated voice assistant
-
-Control your system with your voice, ask about the state of different components or about anything you like.
+- #### Integrated voice assistant
+  Control your system with your voice, ask about the state of different components or about anything you like.
 
 ## Requirements
 
@@ -75,8 +65,8 @@ Check out [this article](https://coconup.medium.com/lithium-on-the-cheap-build-a
 
 Vendor | Description | Purchase links
 --- | --- | ---
-JBD BMS | JBD BMS's with bluetooth connection | [100-150A](https://s.click.aliexpress.com/e/_DmvUcU1)<br>[200A](https://s.click.aliexpress.com/e/_DBEQQeN)
-Liontron | LiFePo4 batteries with bluetooth connection | [100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
+JBD BMS | JBD BMS's with bluetooth connection | - [100-150A](https://s.click.aliexpress.com/e/_DmvUcU1)<br>- [200A](https://s.click.aliexpress.com/e/_DBEQQeN)
+Liontron | LiFePo4 batteries with bluetooth connection | - [100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
 
 #### Solar chargers
 
@@ -84,8 +74,8 @@ Check out [this article](https://coconup.medium.com/lithium-on-the-cheap-build-a
 
 Vendor | Description | Purchase links
 --- | --- | ---
-Renogy | MPPT (+ DC/DC) chargers with bluetooth connection | [50A MPPT+DC/DC](https://www.amazon.de/-/en/gp/product/B07SJGLGY8/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=8395a1bdf3ad4673341546cc27f4cf27&camp=1638&creative=6742)<br>[BT-2 Adapter](https://www.amazon.de/-/en/Renogy-BT-2-Bluetooth-Module/dp/B084Q1V7KZ?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=b28619be77887bed59752bce5334ccb3&camp=1638&creative=6742)
-SRNE | MPPT + DC/DC charger with bluetooth connection | [50A MPPT+DC/DC](https://www.amazon.de/-/en/Charger-Batteries-Intelligent-Charging-Caravans/dp/B09ZXZT3P1/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=49bd954f9807664168aa2633de293861&camp=1638&creative=6742)<br>[BT-2 Adapter](https://s.click.aliexpress.com/e/_DBeq4db)
+Renogy | MPPT (+ DC/DC) chargers with bluetooth connection | - [50A MPPT+DC/DC](https://www.amazon.de/-/en/gp/product/B07SJGLGY8/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=8395a1bdf3ad4673341546cc27f4cf27&camp=1638&creative=6742)<br>- [BT-2 Adapter](https://www.amazon.de/-/en/Renogy-BT-2-Bluetooth-Module/dp/B084Q1V7KZ?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=b28619be77887bed59752bce5334ccb3&camp=1638&creative=6742)
+SRNE | MPPT + DC/DC charger with bluetooth connection | - [50A MPPT+DC/DC](https://www.amazon.de/-/en/Charger-Batteries-Intelligent-Charging-Caravans/dp/B09ZXZT3P1/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=49bd954f9807664168aa2633de293861&camp=1638&creative=6742)<br>- [BT-2 Adapter](https://s.click.aliexpress.com/e/_DBeq4db)
 
 #### GPS trackers
 
@@ -97,7 +87,7 @@ Various | Any GPS USB dongle | [link](https://www.amazon.de/-/en/G-Mouse-Navigat
 
 Vendor | Description | Purchase links
 --- | --- | ---
-DYI | Ultrasonic sensor JSN-SR20-Y1 + ESP8266 board | [JSN-SR20-Y1](https://s.click.aliexpress.com/e/_DBeq4db)<br>[ESP8266](https://www.amazon.de/-/en/ESP8266-NodeMcu-Development-Compatible-Micropython/dp/B0CLXZG25B/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=3fce16ef11cac0c5ec5fd0ac16004519&camp=1638&creative=6742)
+DIY | Ultrasonic sensor JSN-SR20-Y1 + ESP8266 board | - [JSN-SR20-Y1](https://s.click.aliexpress.com/e/_DBeq4db)<br>- [ESP8266](https://www.amazon.de/-/en/ESP8266-NodeMcu-Development-Compatible-Micropython/dp/B0CLXZG25B/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=3fce16ef11cac0c5ec5fd0ac16004519&camp=1638&creative=6742)
 
 #### Security cameras
 
