@@ -35,14 +35,6 @@ services:
     - /var/lib/docker/volumes:/var/lib/docker/volumes
     restart: unless-stopped
   
-  gpiod:
-    container_name: gpiod
-    image: corbosman/pigpiod
-    restart: unless-stopped
-    privileged: true
-    ports:
-    - "8888:8888"
-
   gpsd:
     container_name: gpsd
     build:
@@ -77,6 +69,7 @@ services:
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
       MICROPHONE_UDEV_KEY: ${MICROPHONE_UDEV_KEY}
       HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
+      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
     ports:
     - "1880:1880"
     devices:
@@ -177,11 +170,16 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       AUTOMATION_API_ROOT_URL: "http://127.0.0.1:1881/api/v1"
+      BUTTERFLY_API_ROOT_URL: "http://127.0.0.1:3005"
+      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
+      FRIGATE_API_ROOT_URL: "http://127.0.0.1:5000"
       VANPI_API_ROOT_URL: ${VANPI_API_ROOT_URL}
       VANPI_APP_API_ALLOWED_DOMAINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
       VANPI_APP_API_ENABLE_AUTHENTICATION: ${VANPI_APP_API_ENABLE_AUTHENTICATION}
       VANPI_APP_API_USERNAME: ${VANPI_APP_API_USERNAME}
       VANPI_APP_API_PASSWORD: ${VANPI_APP_API_PASSWORD}
+      GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
+      ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
   
   vanpi-services-api:
     container_name: vanpi-services-api
@@ -235,7 +233,22 @@ services:
       MQTT_BROKER: mqtt://mosquitto:1883
       MQTT_TOPIC: ${GPSD_MQTT_TOPIC}
       GPSD_HOST: gpsd
-  
+ 
+  vanpi-butterfly-ai:
+    container_name: vanpi-butterfly-ai
+    image: node:21-alpine
+    command: sh -c "cd /usr/src/app && npm install && node server.js"
+    network_mode: host
+    volumes:
+    - ./volumes/butterfly:/usr/src/app
+    restart: unless-stopped
+    environment:
+      DEBUG: 1
+      PORT: "3005"
+      OPEN_AI_API_KEY: ${OPEN_AI_API_KEY}
+      OPEN_WEATHER_MAP_API_KEY: ${OPEN_WEATHER_MAP_API_KEY}
+      ALLOWED_ORIGINS: "http://127.0.0.1:3001,http://localhost:3000"
+
   influxdb:
     container_name: influxdb
     image: "influxdb:1.8"
@@ -266,7 +279,7 @@ services:
   
   vanpi-open-wake-word:
     container_name: vanpi-open-wake-word
-      #image: inoukim/onnxruntime
+    network_mode: host
     build:
       context: ./services/vanpi-open-wake-word
     volumes:
@@ -275,6 +288,39 @@ services:
     ports:
     - "9002:9002"
     restart: unless-stopped
+
+  frigate:
+    container_name: frigate
+    privileged: true
+    restart: unless-stopped
+    image: ghcr.io/blakeblackshear/frigate:stable
+    shm_size: "128mb"
+    devices:
+      - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, needs to be modified for other versions
+      - /dev/apex_0:/dev/apex_0 # passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
+      - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./volumes/frigate/config:/config
+      - ./volumes/frigate/storage:/media/frigate
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    ports:
+      - "5000:5000"
+      - "8554:8554" # RTSP feeds
+      - "8555:8555/tcp" # WebRTC over tcp
+      - "8555:8555/udp" # WebRTC over udp
+    environment:
+      FRIGATE_RTSP_PASSWORD: "password"
+
+  rtsptoweb:
+    container_name: rtsp-to-web
+    # volumes:
+    #   - /volumes/rtsp-to-web/config:/config
+    network_mode: host
+    image: ghcr.io/deepch/rtsptoweb:latest
 
   tunnel:
     container_name: cloudflared-tunnel
@@ -285,6 +331,27 @@ services:
     environment:
       TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
 
+  nextcloud-client:
+    container_name: nextcloud-client
+    build:
+      context: services/nextcloud-client
+    environment:
+      NC_URL: ${NEXTCLOUD_URL}
+      NC_USER: ${NEXTCLOUD_USER}
+      NC_PASS: ${NEXTCLOUD_PASSWORD}
+      NC_SOURCE_DIR: '/media/nextcloud/'
+      NC_PATH: ''
+      NC_SILENT: 'false'
+      NC_INTERVAL: 300
+      NC_EXIT: 'false'
+      USER: 'ncsync'
+      USER_GID: 1000
+      USER_UID: 1000
+      NC_TRUST_CERT: 'false'
+      NC_HIDDEN: 'false'
+    volumes:
+    - ./volumes:/media/nextcloud
+  
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:latest
