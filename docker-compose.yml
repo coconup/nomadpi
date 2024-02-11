@@ -307,6 +307,9 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 1000000000
+      - type: bind
+        source: ./data/frigate/config.yml
+        target: /config/config.yml
     ports:
       - "5000:5000"
       - "8554:8554" # RTSP feeds

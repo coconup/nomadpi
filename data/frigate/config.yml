@@ -1,0 +1,35 @@
+mqtt:
+  enabled: true
+  host: mosquitto
+  port: 1883
+  topic_prefix: frigate
+  stats_interval: 60
+
+# cameras:
+#   camera_name:
+#     enabled: true
+#     ffmpeg:
+#       inputs:
+#         - path: ...
+#           roles:
+#             - detect
+#         - path: ...
+#           roles:
+#             - record
+#     detect:
+#       enabled: true
+
+motion:
+  mqtt_off_delay: 3
+
+record:
+  enabled: true
+  sync_recordings: true
+
+snapshots:
+  enabled: true
+
+timestamp_style:
+  position: "tl"
+  format: "%Y-%m-%d %H:%M:%S"
+  effect: solid
