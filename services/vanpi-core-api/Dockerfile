@@ -86,7 +86,7 @@ RUN chown -R node-red:root /usr/src/node-red && \
 RUN npm config set cache /data/.npm --global
 
 RUN rm /usr/lib/python3.11/EXTERNALLY-MANAGED
-RUN pip3 install argparse pexpect
+RUN pip3 install argparse pexpect jc
 
 # Renogy BT Python library
 RUN git clone https://github.com/cyrils/renogy-bt.git /lib/renogy-bt && \

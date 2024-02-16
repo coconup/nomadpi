@@ -1,8 +1,8 @@
 # VanPi Docker Stack
 
-This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, motorhome or tiny house. 
+This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, motorhome or tiny home. 
 
-It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can also be installed and run independently.
+It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can also run independently.
 
 ![dashboard](https://i.ibb.co/ZG2ZbzM/vanpi-dashboard.png)
 
@@ -11,7 +11,7 @@ It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can
 Here is a list of the main features of the stack.
 
 - #### Relays and WiFi relays
-  Control any relay and wifi relay, organize your control panel and map single buttons to multiple switches.
+  Control appliances through relays and WiFi relays, organize your control panel and map single buttons to multiple switches.
 
 - #### Batteries
   Monitor the state of charge, current load and remaining capacity of your battery bank.
