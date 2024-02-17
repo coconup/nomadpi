@@ -191,14 +191,16 @@ services:
     - mariadb
     - vanpi-app-api
     restart: unless-stopped
+    network_mode: host
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      DB_HOST: mariadb
+      DB_HOST: "127.0.0.1"
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      ALLOWED_ORIGINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
-  
+      PORT: 3002
+      CORE_API_ROOT_URL: "http://127.0.0.1:1880"
+
   vanpi-mqtt-hub:
     container_name: vanpi-mqtt-hub
     image: node:21-alpine
