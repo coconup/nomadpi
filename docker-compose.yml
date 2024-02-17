@@ -310,13 +310,6 @@ services:
     environment:
       FRIGATE_RTSP_PASSWORD: "password"
 
-  rtsptoweb:
-    container_name: rtsp-to-web
-    # volumes:
-    #   - /volumes/rtsp-to-web/config:/config
-    network_mode: host
-    image: ghcr.io/deepch/rtsptoweb:latest
-
   tunnel:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared
