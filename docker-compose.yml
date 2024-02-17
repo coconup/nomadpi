@@ -165,6 +165,7 @@ services:
     restart: unless-stopped
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      RPI_HOSTNAME: ${RPI_HOSTNAME}
       DB_HOST: "127.0.0.1"
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -236,14 +237,12 @@ services:
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     network_mode: host
     volumes:
-    - ./volumes/butterfly:/usr/src/app
+    - ./volumes/vanpi-butterfly-ai:/usr/src/app
     restart: unless-stopped
     environment:
       DEBUG: 1
       PORT: "3005"
-      OPEN_AI_API_KEY: ${OPEN_AI_API_KEY}
-      OPEN_WEATHER_MAP_API_KEY: ${OPEN_WEATHER_MAP_API_KEY}
-      ALLOWED_ORIGINS: "http://127.0.0.1:3001,http://localhost:3000"
+      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
 
   influxdb:
     container_name: influxdb
