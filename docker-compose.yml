@@ -80,6 +80,7 @@ services:
     volumes:
     - ./volumes/vanpi-core-api/data:/data
     - ./volumes/vanpi-core-api/ssh:/root/.ssh
+    - ./.envrc:/vanpi-docker-stack/.envrc
       # - ./volumes/vanpi-core-api/scripts:/scripts
     - ./data/scripts:/scripts
     - /var/run/docker.sock:/var/run/docker.sock
