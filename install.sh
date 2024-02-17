@@ -38,6 +38,17 @@ clone_nodered_project "vanpi-automation-api"
 echo 'Setting up `direnv``'
 echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
 
+direnv_config_file="$HOME/.config/direnv/config.toml"
+
+# Create the directory if it doesn't exist
+mkdir -p "$(dirname "$direnv_config_file")"
+
+# Configure direnv to always allow .envrc
+cat <<EOF > "$direnv_config_file"
+[whitelist]
+prefix = ["$current_dir"]
+EOF
+
 # Create .envrc file
 echo 'Generating environment variables'
 source ./generate_envrc.sh
@@ -47,10 +58,10 @@ echo "REACT_APP_RPI_HOSTNAME=${RPI_HOSTNAME}" > volumes/vanpi-react/.env
 echo 'Enabling I2C and 1-Wire'
 sudo raspi-config nonint do_i2c 0
 echo -e "dtoverlay=w1-gpio\ndtoverlay=uart5\nenable_uart=1" | sudo tee -a /boot/config.txt
-sudo debconf-set-selections <<EOF
-iptables-persistent iptables-persistent/autosave_v4 boolean true
-iptables-persistent iptables-persistent/autosave_v6 boolean true
-EOF
+# sudo debconf-set-selections <<EOF
+# iptables-persistent iptables-persistent/autosave_v4 boolean true
+# iptables-persistent iptables-persistent/autosave_v6 boolean true
+# EOF
 
 # Docker patches
 echo 'Patching system for `docker` compatibility'
