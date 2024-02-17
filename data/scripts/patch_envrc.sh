@@ -1,21 +1,20 @@
 #!/bin/bash
 
-# Check if key and value are provided
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <key> <value>"
+# Check if correct number of parameters are provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <envrc_file_path> <key> <value>"
     exit 1
 fi
 
-# Assign key and value from parameters
-key=$1
-value=$2
+# Assign variables from parameters
+envrc_file="$1"
+key="$2"
+value="$3"
 
 # Check if .envrc file exists
-envrc_file=".envrc"
 if [ ! -f "$envrc_file" ]; then
-    echo "$envrc_file not found. Creating a new file..."
-    echo "export $key=$value" > "$envrc_file"
-    exit 0
+    echo "$envrc_file not found. Please create the file first."
+    exit 1
 fi
 
 # Update or add key-value pair in .envrc file
@@ -28,7 +27,5 @@ else
     echo "export $key=$value" >> "$envrc_file"
     echo "Added $key to $envrc_file"
 fi
-
-direnv allow
 
 exit 0
