@@ -20,7 +20,7 @@ fi
 # Update or add key-value pair in .envrc file
 if grep -q "^export $key=" "$envrc_file"; then
     # Key found, update the value
-    sed -i "s/^export $key=.*/export $key=$value/" "$envrc_file"
+    echo "$( cat "$envrc_file" | sed "s/^export $key=.*/export $key=$value/")" > "$envrc_file"
     echo "Updated $key in $envrc_file"
 else
     # Key not found, add a new line
