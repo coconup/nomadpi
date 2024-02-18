@@ -80,7 +80,7 @@ services:
     volumes:
     - ./volumes/vanpi-core-api/data:/data
     - ./volumes/vanpi-core-api/ssh:/root/.ssh
-    - ./.envrc:/vanpi-docker-stack/.envrc
+    - ./volumes/secrets:/secrets
       # - ./volumes/vanpi-core-api/scripts:/scripts
     - ./data/scripts:/scripts
     - /var/run/docker.sock:/var/run/docker.sock
@@ -313,14 +313,14 @@ services:
     environment:
       FRIGATE_RTSP_PASSWORD: "password"
 
-  tunnel:
+  cloudflare-tunnel:
     container_name: cloudflared-tunnel
-    image: cloudflare/cloudflared
-    restart: always
-    command: tunnel run
+    build:
+      context: ./services/cloudflared
+    restart: unless-stopped
     network_mode: "host"
-    environment:
-      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    secrets:
+    - cloudflare_tunnel_token
 
   nextcloud-client:
     container_name: nextcloud-client
@@ -362,3 +362,7 @@ services:
     restart: unless-stopped
     depends_on:
     - mosquitto
+
+secrets:
+  cloudflare_tunnel_token:
+    file: ./volumes/secrets/cloudflare/tunnel_token
