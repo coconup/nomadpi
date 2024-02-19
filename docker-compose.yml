@@ -327,9 +327,6 @@ services:
     build:
       context: services/nextcloud-client
     environment:
-      NC_URL: ${NEXTCLOUD_URL}
-      NC_USER: ${NEXTCLOUD_USER}
-      NC_PASS: ${NEXTCLOUD_PASSWORD}
       NC_SOURCE_DIR: '/media/nextcloud/'
       NC_PATH: ''
       NC_SILENT: 'false'
@@ -341,7 +338,13 @@ services:
       NC_TRUST_CERT: 'false'
       NC_HIDDEN: 'false'
     volumes:
-    - ./volumes:/media/nextcloud
+    - ./volumes/mariadb:/media/nextcloud/mariadb
+    - ./volumes/influxdb:/media/nextcloud/influxdb
+    - ./volumes/frigate:/media/nextcloud/frigate
+    secrets:
+    - nextcloud_host
+    - nextcloud_username
+    - nextcloud_password
   
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -366,3 +369,9 @@ services:
 secrets:
   cloudflare_tunnel_token:
     file: ./volumes/secrets/cloudflare/tunnel_token
+  nextcloud_host:
+    file: ./volumes/secrets/nextcloud/nextcloud_host
+  nextcloud_username:
+    file: ./volumes/secrets/nextcloud/nextcloud_username
+  nextcloud_password:
+    file: ./volumes/secrets/nextcloud/nextcloud_password

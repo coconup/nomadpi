@@ -28,4 +28,5 @@ RUN apk update && apk add nextcloud-client moreutils sudo && rm -rf /etc/apk/cac
 # add run script
 ADD run.sh /usr/bin/run.sh
 
-CMD /usr/bin/run.sh
+ENTRYPOINT [ "/bin/sh", "-c", "export NC_USER=$(cat /run/secrets/nextcloud_username); export NC_PASS=$(cat /run/secrets/nextcloud_password); export NC_URL=$(cat /run/secrets/nextcloud_host); /usr/bin/run.sh" ]
+
