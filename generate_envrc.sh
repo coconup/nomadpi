@@ -25,10 +25,10 @@ echo "export DB_NAME=default" >> "$envrc_file"
 echo "export DB_PASSWORD=$(generate_random_string)" >> "$envrc_file"
 echo "export DB_ROOT_PASSWORD=$(generate_random_string)" >> "$envrc_file"
 
-echo "export GPSD_UDEV_KEY=vanpi-gpsd-usb" >> "$envrc_file"
-echo "export ZIGBEE_UDEV_KEY=vanpi-zigbee-usb" >> "$envrc_file"
+echo "export GPSD_UDEV_KEY=nomadpi-gpsd-usb" >> "$envrc_file"
+echo "export ZIGBEE_UDEV_KEY=nomadpi-zigbee-usb" >> "$envrc_file"
 
-echo "export HUB_MQTT_TOPIC=vanpi/mqtt_hub" >> "$envrc_file"
-echo "export GPSD_MQTT_TOPIC=vanpi/gps_values" >> "$envrc_file"
+echo "export HUB_MQTT_TOPIC=nomadpi/mqtt_hub" >> "$envrc_file"
+echo "export GPSD_MQTT_TOPIC=nomadpi/gps_values" >> "$envrc_file"
 
 direnv allow

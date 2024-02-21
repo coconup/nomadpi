@@ -47,10 +47,10 @@ services:
     - "2947:2947"
     restart: unless-stopped
   
-  vanpi-core-api:
-    container_name: vanpi-core-api
+  nomadpi-core-api:
+    container_name: nomadpi-core-api
     build:
-      context: ./services/vanpi-core-api/.
+      context: ./services/nomadpi-core-api/.
     restart: unless-stopped
     user: "0"
     network_mode: "host"
@@ -60,7 +60,7 @@ services:
       GPIOD_HOST: 127.0.0.1
       PEKAWAY_SCRIPTS_PATH: /scripts
       HTTP_API_BASE_PATH: api
-      VANPI_APP_API_ALLOWED_DOMAINS: ${VANPI_APP_API_ALLOWED_DOMAINS}
+      NOMADPI_APP_API_ALLOWED_DOMAINS: ${NOMADPI_APP_API_ALLOWED_DOMAINS}
       DB_HOST: 127.0.0.1
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
@@ -78,10 +78,10 @@ services:
       # - /dev/gpiomem:/dev/gpiomem
       #- /dev/i2c-1:/dev/i2c-1
     volumes:
-    - ./volumes/vanpi-core-api/data:/data
-    - ./volumes/vanpi-core-api/ssh:/root/.ssh
+    - ./volumes/nomadpi-core-api/data:/data
+    - ./volumes/nomadpi-core-api/ssh:/root/.ssh
     - ./volumes/secrets:/secrets
-      # - ./volumes/vanpi-core-api/scripts:/scripts
+      # - ./volumes/nomadpi-core-api/scripts:/scripts
     - ./data/scripts:/scripts
     - /var/run/docker.sock:/var/run/docker.sock
       # - /run/dbus:/run/dbus:ro
@@ -89,8 +89,8 @@ services:
     - /dev:/dev
     - /lib/udev/rules.d:/lib/udev/rules.d
   
-  vanpi-automation-api:
-    container_name: vanpi-automation-api
+  nomadpi-automation-api:
+    container_name: nomadpi-automation-api
     image: nodered/node-red
     restart: unless-stopped
     user: "0"
@@ -99,12 +99,12 @@ services:
       TZ: ${TZ:-Etc/UTC}
       NODE_RED_ENABLE_PROJECTS: "true"
       PORT: 1881
-      VANPI_APP_API_URL: http://127.0.0.1:1880/api/v1
+      NOMADPI_APP_API_URL: http://127.0.0.1:1880/api/v1
     ports:
     - "1881:1881"
     volumes:
-    - ./volumes/vanpi-automation-api/data:/data
-    - ./volumes/vanpi-core-api/ssh:/root/.ssh
+    - ./volumes/nomadpi-automation-api/data:/data
+    - ./volumes/nomadpi-core-api/ssh:/root/.ssh
 
   mosquitto:
     container_name: mosquitto
@@ -141,24 +141,24 @@ services:
     - "3306:3306"
     restart: unless-stopped
 
-  vanpi-react:
-    container_name: vanpi-react
+  nomadpi-react:
+    container_name: nomadpi-react
     build:
-      context: ./services/vanpi-react
+      context: ./services/nomadpi-react
     command: sh -c "cd /usr/src/app && npm install && npm start"
     volumes:
-    - ./volumes/vanpi-react:/usr/src/app
+    - ./volumes/nomadpi-react:/usr/src/app
     ports:
     - "3000:3000"
     restart: unless-stopped
   
-  vanpi-app-api:
-    container_name: vanpi-app-api
+  nomadpi-app-api:
+    container_name: nomadpi-app-api
     image: node:21-alpine
     network_mode: "host"
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/vanpi-app-api/src:/usr/src/app
+    - ./volumes/nomadpi-app-api/src:/usr/src/app
     ports:
     - "3001:3001"
     depends_on:
@@ -179,17 +179,17 @@ services:
       GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
   
-  vanpi-services-api:
-    container_name: vanpi-services-api
+  nomadpi-services-api:
+    container_name: nomadpi-services-api
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/vanpi-services-api:/usr/src/app
+    - ./volumes/nomadpi-services-api:/usr/src/app
     ports:
     - "3002:3000"
     depends_on:
     - mariadb
-    - vanpi-app-api
+    - nomadpi-app-api
     restart: unless-stopped
     network_mode: host
     environment:
@@ -201,12 +201,12 @@ services:
       PORT: 3002
       CORE_API_ROOT_URL: "http://127.0.0.1:1880"
 
-  vanpi-mqtt-hub:
-    container_name: vanpi-mqtt-hub
+  nomadpi-mqtt-hub:
+    container_name: nomadpi-mqtt-hub
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/vanpi-mqtt-hub/src:/usr/src/app
+    - ./volumes/nomadpi-mqtt-hub/src:/usr/src/app
     depends_on:
     - mariadb
     - mosquitto
@@ -219,12 +219,12 @@ services:
       DB_DATABASE: ${DB_NAME}
       HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
   
-  vanpi-gpsd-to-mqtt:
-    container_name: vanpi-gpsd-to-mqtt
+  nomadpi-gpsd-to-mqtt:
+    container_name: nomadpi-gpsd-to-mqtt
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/vanpi-gpsd-to-mqtt/src:/usr/src/app
+    - ./volumes/nomadpi-gpsd-to-mqtt/src:/usr/src/app
     depends_on:
     - mosquitto
     - gpsd
@@ -234,13 +234,13 @@ services:
       MQTT_TOPIC: ${GPSD_MQTT_TOPIC}
       GPSD_HOST: gpsd
  
-  vanpi-butterfly-ai:
-    container_name: vanpi-butterfly-ai
+  nomadpi-butterfly-ai:
+    container_name: nomadpi-butterfly-ai
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     network_mode: host
     volumes:
-    - ./volumes/vanpi-butterfly-ai:/usr/src/app
+    - ./volumes/nomadpi-butterfly-ai:/usr/src/app
     restart: unless-stopped
     environment:
       DEBUG: 1
@@ -275,14 +275,14 @@ services:
       retries: 3
       start_period: 30s
   
-  vanpi-open-wake-word:
-    container_name: vanpi-open-wake-word
+  nomadpi-open-wake-word:
+    container_name: nomadpi-open-wake-word
     network_mode: host
     build:
-      context: ./services/vanpi-open-wake-word
+      context: ./services/nomadpi-open-wake-word
     volumes:
-    - ./volumes/vanpi-open-wake-word:/app
-    command: sh -c "python3 streaming_server.py --model_path=./ok_vanpi.onnx --inference_framework=onnx"
+    - ./volumes/nomadpi-open-wake-word:/app
+    command: sh -c "python3 streaming_server.py --model_path=./ok_nomadpi.onnx --inference_framework=onnx"
     ports:
     - "9002:9002"
     restart: unless-stopped
@@ -346,16 +346,16 @@ services:
     - nextcloud_username
     - nextcloud_password
   
-  ble-to-mqtt:
-    container_name: ble-to-mqtt
+  nomadpi-ble-to-mqtt:
+    container_name: nomadpi-ble-to-mqtt
     build:
-      context: ./services/ble-to-mqtt
+      context: ./services/nomadpi-ble-to-mqtt
     restart: unless-stopped
     environment:
       MQTT_HOST: "mosquitto"
       MQTT_TOPIC: "ble_to_mqtt"
     volumes:
-    - ./volumes/ble-to-mqtt:/app
+    - ./volumes/nomadpi-ble-to-mqtt:/app
     - /run/dbus:/run/dbus:ro
     ports:
     - "5005:5000"

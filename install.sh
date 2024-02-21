@@ -14,13 +14,19 @@ sudo apt install -y \
 echo 'Cloning VanPi stack repositories'
 
 mkdir volumes
-git clone git@github.com:coconup/vanpi-app-api.git volumes/vanpi-app-api
-git clone git@github.com:coconup/vanpi-services-api.git volumes/vanpi-services-api
-git clone git@github.com:coconup/vanpi-react.git volumes/vanpi-react
-git clone git@github.com:coconup/vanpi-mqtt-hub.git volumes/vanpi-mqtt-hub
-git clone git@github.com:coconup/vanpi-gpsd-to-mqtt.git volumes/vanpi-gpsd-to-mqtt
-git clone git@github.com:coconup/vanpi-butterfly-ai volumes/vanpi-butterfly-ai
-git clone git@github.com:coconup/vanpi-open-wake-word volumes/vanpi-open-wake-word
+git clone git@github.com:coconup/nomadpi-app-api.git volumes/nomadpi-app-api
+git clone git@github.com:coconup/nomadpi-services-api.git volumes/nomadpi-services-api
+git clone git@github.com:coconup/nomadpi-react.git volumes/nomadpi-react
+git clone git@github.com:coconup/nomadpi-mqtt-hub.git volumes/nomadpi-mqtt-hub
+git clone git@github.com:coconup/nomadpi-gpsd-to-mqtt.git volumes/nomadpi-gpsd-to-mqtt
+git clone git@github.com:coconup/nomadpi-butterfly-ai volumes/nomadpi-butterfly-ai
+git clone git@github.com:coconup/nomadpi-open-wake-word volumes/nomadpi-open-wake-word
+git clone git@github.com:coconup/nomadpi-ble-to-mqtt volumes/nomadpi-ble-to-mqtt
+
+cd volumes/nomadpi-ble-to-mqtt
+./install.sh
+
+cd "$current_dir"
 
 clone_nodered_project() {
     local repo_name=$1
@@ -31,8 +37,8 @@ clone_nodered_project() {
     cd "$current_dir"
 }
 
-clone_nodered_project "vanpi-core-api"
-clone_nodered_project "vanpi-automation-api"
+clone_nodered_project "nomadpi-core-api"
+clone_nodered_project "nomadpi-automation-api"
 
 # Add direnv to .bashrc
 echo 'Setting up `direnv``'
@@ -52,7 +58,7 @@ EOF
 # Create .envrc file
 echo 'Generating environment variables'
 source ./generate_envrc.sh
-echo "REACT_APP_RPI_HOSTNAME=${RPI_HOSTNAME}" > volumes/vanpi-react/.env
+echo "REACT_APP_RPI_HOSTNAME=${RPI_HOSTNAME}" > volumes/nomadpi-react/.env
 
 # Initialize secret files
 echo 'Initializing docker secrets'

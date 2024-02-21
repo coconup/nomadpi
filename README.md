@@ -1,10 +1,10 @@
-# VanPi Docker Stack
+# nomadPi Docker Stack
 
 This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, motorhome or tiny home. 
 
-It is primarily catered to the [VanPi](https://pekaway.de/) platform, but it can also run independently.
+It was initiated as an alternative software stack for the [VanPi](https://pekaway.de/) platform, which it aims at supporting in the future, but it can also run independently.
 
-![dashboard](https://i.ibb.co/ZG2ZbzM/vanpi-dashboard.png)
+![dashboard](https://i.ibb.co/jzgrRPw/nomadpi-dashboard.png)
 
 ## Main features
 
@@ -52,14 +52,14 @@ Here is a list of currently supported devices and affiliate links for where to p
 
 Model | Purchase links
 --- | ---
-Raspberry Pi 5 8gb | [link](https://www.ebay.de/itm/266600494811?mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
-Raspberry Pi 4 8gb | [link](https://www.amazon.de/-/en/Raspberry-Model-ARM-8GB-Linux/dp/B09TTKT94J?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=2c621d09af30d8b8cf537f56365a8798&camp=1638&creative=6742)
+Raspberry Pi 5 8gb | [link](https://www.amazon.com/Raspberry-Pi-Computer-8GB-Quicker/dp/B0CPGPJ3JC?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=29ec03664b24996ed161eccc5b406589&camp=1789&creative=9325)
+Raspberry Pi 4 8gb | [link](https://www.amazon.com/Raspberry-Pi-Computer-Suitable-Workstation/dp/B0899VXM8F?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=ea0839fc470d3246da714dcb2083c0ba&camp=1789&creative=9325)
 
 #### WiFi relays
 
 Vendor | Description | Purchase links
 --- | --- | ---
-Tasmota | Any tasmota WiFi relay | [link](https://www.amazon.de/-/en/DollaTek-SP8266-Channel-Mobile-Control/dp/B07HC7SJK1/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=2a1802575c1c19e0f05eadc5e5eec279&camp=1638&creative=6742)
+Tasmota | Any tasmota WiFi relay | [link](https://www.amazon.com/Mumubiz-Channel-Inching-Wireless-Compatible/dp/B0CJRZV211/?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=7795e193757f0ce4361ebea3e0bd702e&camp=1789&creative=9325)
 
 #### Batteries
 
@@ -68,26 +68,26 @@ Check out [this article](https://coconup.medium.com/lithium-on-the-cheap-build-a
 Vendor | Description | Purchase links
 --- | --- | ---
 JBD BMS | JBD BMS's with bluetooth connection | - [100-150A](https://s.click.aliexpress.com/e/_DmvUcU1)<br>- [200A](https://s.click.aliexpress.com/e/_DBEQQeN)
-Liontron | LiFePo4 batteries with bluetooth connection | - [100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
+Liontron | LiFePo4 batteries with bluetooth connection | - [🇩🇪 100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)<br />[🇬🇧 100Ah](https://www.ebay.co.uk/itm/156069074273?mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1)
 
 #### Solar chargers
 
 Vendor | Description | Purchase links
 --- | --- | ---
-Renogy | MPPT (+ DC/DC) chargers with bluetooth connection | - [50A MPPT+DC/DC](https://www.amazon.de/-/en/gp/product/B07SJGLGY8/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=8395a1bdf3ad4673341546cc27f4cf27&camp=1638&creative=6742)<br>- [BT-2 Adapter](https://www.amazon.de/-/en/Renogy-BT-2-Bluetooth-Module/dp/B084Q1V7KZ?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=b28619be77887bed59752bce5334ccb3&camp=1638&creative=6742)
+Renogy | MPPT (+ DC/DC) chargers with bluetooth connection | - [🇪🇺 50A MPPT+DC/DC](https://www.amazon.de/-/en/gp/product/B07SJGLGY8/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=8395a1bdf3ad4673341546cc27f4cf27&camp=1638&creative=6742)<br/>[🇪🇺 60A MPPT](https://www.amazon.de/-/en/Renogy-Charge-Controller-Lithium-Batteries/dp/B09WR7YLQX?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=37c13db07da871ee5ba3153bdbed02b4&camp=1638&creative=6742)<br/>[🇪🇺 40A MPPT](https://www.amazon.de/Renogy-Rover-MPPTSolar-Charge-Controller-Black/dp/B01MSYGZGI?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=4aebfa3ea1a06e20687f3c2eabaea5e3&camp=1638&creative=6742)<br/>[🇪🇺 30A MPPT](https://www.amazon.de/Renogy-Batterieladeger%25C3%25A4t-Solarladeregler-Starterbatterie-Versorgungsbatterie-Schwarz/dp/B0891SJTD5?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=7970578bc5ad2ce75eaa326710d3e186&camp=1638&creative=6742)<br/>-[🇪🇺 Other Renogy MPPT chargers](https://www.amazon.com/Renogy-Controller-Alternator-Function-Batteries/dp/B0C5LXB92B?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=7f7f691d1fb07d1770d7e6c6b29100f1&camp=1789&creative=9325)<br/>-[🇺🇸 50A MPPT+DC/DC](https://www.amazon.com/Renogy-Controller-Alternator-Function-Batteries/dp/B0C5LXB92B?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=7f7f691d1fb07d1770d7e6c6b29100f1&camp=1789&creative=9325)<br/>-[🇺🇸 30A MPPT+DC/DC](https://www.amazon.com/Renogy-Charger-MPPT-Batteries-Multi-Stage/dp/B093BB3PCV?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=a152e1b05e1fc24b5e352844b8d9b36e&camp=1789&creative=9325)<br/>-[🇺🇸 60A MPPT](https://www.amazon.com/Renogy-Solar-Charge-Controller-Adjustable/dp/B07PXJPSTY?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=46334076b1b4b5c95987fd3c41420f39&camp=1789&creative=9325)<br/>-[🇺🇸 40A MPPT](https://www.amazon.com/gp/aw/d/B079JRNFY6?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=5d8ded35a4fac6d084a081d9bd520cb1&camp=1789&creative=9325)<br/>-[🇺🇸 30A MPPT](https://www.amazon.com/gp/aw/d/B07DNVW37B?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=99c3561d7ded3edc7426e38e2f0c63e8&camp=1789&creative=9325)<br/>-[BT-2 Adapter](https://www.amazon.com/Renogy-BT-2-Bluetooth-Module-Communication/dp/B0899932YC?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=ad3eaa1069487b1c0b2dd480060988b3&camp=1789&creative=9325)
 SRNE | MPPT + DC/DC charger with bluetooth connection | - [50A MPPT+DC/DC](https://www.amazon.de/-/en/Charger-Batteries-Intelligent-Charging-Caravans/dp/B09ZXZT3P1/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=49bd954f9807664168aa2633de293861&camp=1638&creative=6742)<br>- [BT-2 Adapter](https://s.click.aliexpress.com/e/_DBeq4db)
 
 #### GPS trackers
 
 Vendor | Description | Purchase links
 --- | --- | ---
-Various | Any GPS USB dongle | [link](https://www.amazon.de/-/en/G-Mouse-Navigation-External-Receiver-Raspberry/dp/B07MY2VD3H?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=34bd0bbd0ab16ea4c06415cfc545b010&camp=1638&creative=6742)
+Various | Any GPS USB dongle | [link](https://www.amazon.com/Navigation-External-Receiver-Raspberry-Geekstory/dp/B078Y52FGQ?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=a4f397104925780a75a18d7c639af435&camp=1789&creative=9325)
 
 #### Water tank sensors
 
 Vendor | Description | Purchase links
 --- | --- | ---
-DIY | Ultrasonic sensor JSN-SR20-Y1 + ESP8266 board | - [JSN-SR20-Y1](https://s.click.aliexpress.com/e/_DBeq4db)<br>- [ESP8266](https://www.amazon.de/-/en/ESP8266-NodeMcu-Development-Compatible-Micropython/dp/B0CLXZG25B/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=3fce16ef11cac0c5ec5fd0ac16004519&camp=1638&creative=6742)
+DIY | Ultrasonic sensor JSN-SR20-Y1 + ESP8266 board | - [JSN-SR20-Y1](https://s.click.aliexpress.com/e/_DBeq4db)<br>- [🇪🇺 ESP8266](https://www.amazon.de/-/en/ESP8266-NodeMcu-Development-Compatible-Micropython/dp/B0CLXZG25B/?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=3fce16ef11cac0c5ec5fd0ac16004519&camp=1638&creative=6742)<br>- [🇺🇸 ESP8266](https://www.amazon.com/ESP8266-Internet-Development-Wireless-Micropython/dp/B07RNX3W9J?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=00ea2419b8b9b69f32965339c45dbc71&camp=1789&creative=9325)
 
 #### Security cameras
 
@@ -95,7 +95,7 @@ Any camera compatible with Frigate is supported. Some examples below.
 
 Vendor | Description | Purchase links
 --- | --- | ---
-Reolink | RLC-520-5MP | [RLC-520-5MP](https://www.amazon.de/dp/B079L4W3CM?&_encoding=UTF8&tag=coconup03-21&linkCode=ur2&linkId=0210610de665f53798fc2f7c324ca344&camp=1638&creative=6742)
+Reolink | Any Reolink camera | - [RLC-520A](https://www.amazon.com/REOLINK-Security-Outdoor-Surveillance-Detection/dp/B08LKC9BJ8?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=cc85f054aff52c734b7f7b91f532a749&camp=1789&creative=9325)<br/>- [Other Reolink cameras](https://www.amazon.com/s?k=reolink+camera&crid=86W8UXMWSP04&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=f78d0a4f61cc4ba43a8f1cb2c164cb47&camp=1789&creative=9325)
 
 #### Heaters
 
@@ -109,62 +109,52 @@ Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-
 
 1.  Flash a copy of Raspbian OS lite 64-bit and boot your Raspberry Pi.
 
-2.  Install Git and clone this repository:
+2. SSH into your Raspberry Pi after it booted (this might take some minutes upon first run). The command below assumes you chose `pi` as your username and `raspberrypi` as your hostname, while flashing the OS.
+
+    ```bash
+    ssh pi@raspberrypi.local
+    ```
+
+3.  Install Git and clone this repository:
     
     ```bash
     sudo apt-get install git
-    git clone git@github.com:coconup/vanpi-docker-stack.git
-    cd vanpi-docker-stack
+    git clone git@github.com:coconup/nomadpi.git ~/nomadpi
     ```
 
-3.  Run the installation script:
+4.  Run the installation script:
     
     ```bash
+    cd ~/nomadpi
     ./install.sh
     ```
     
-    This script installs `direnv`, Docker and Docker Compose. Reboot after running it.
-
-4.  Copy the example environment file and customize it according to your needs:
-    
-    ```bash
-    cd ~/vanpi-docker-stack
-    cp .envrc.example .envrc
-    vim .envrc
-    ```
-    
-    Edit the `.envrc` file to set your desired configurations. Don't forget to run `direnv allow` any time changes to `.envrc` are made.
-    
+    This script installs all necessary services, `direnv`, Docker and Docker Compose. It will reboot the Pi after it runs.
 
 5.  Start the stack:
     
     ```bash
+    cd ~/nomadpi
     docker-compose up -d
     ```
     
     This command will start all the defined services in the background.
 
-6.  Navigate to the `vanpi-core-api` Node-Red interface and set up a new project, cloning this repository: https://github.com/coconup/vanpi-core-api.git
-
-    Install missing dependencies within Node-Red as requested.
-
-7.  Navigate to the `vanpi-automation-api` Node-Red interface and set up a new project, cloning this repository: https://github.com/coconup/vanpi-automation-api.git
-
 ## Services and resources
 
 #### Core services
 
-  - **VanPi React**: React-based frontend ([GitHub project](https://github.com/coconup/vanpi-react)). Access it at http://raspberrypi.local:3000.
+  - **nomadPi React**: React-based frontend ([GitHub project](https://github.com/coconup/nomadpi-react)). Access it at http://raspberrypi.local:3000.
 
   - **Portainer CE**: Web-based Docker management interface. Access it at http://raspberrypi.local:9000.
 
   - **Frigate**: AI-powered surveillance service for CCTV that employs real-time object detection and alerts for enhanced security monitoring. Access it at http://raspberrypi.local:5000.
     
-  - **VanPi Core API**: Node-RED-based core API for controlling the VanPi hardware ([GitHub project](https://github.com/coconup/vanpi-core-api)). Access it at http://raspberrypi.local:1880.
+  - **nomadPi Core API**: Node-RED-based core API for controlling the nomadPi hardware ([GitHub project](https://github.com/coconup/nomadpi-core-api)). Access it at http://raspberrypi.local:1880.
     
-  - **VanPi Automation API**: Node-RED-based automation API ([GitHub project](https://github.com/coconup/vanpi-automation-api)). Access it at http://raspberrypi.local:1881.
+  - **nomadPi Automation API**: Node-RED-based automation API ([GitHub project](https://github.com/coconup/nomadpi-automation-api)). Access it at http://raspberrypi.local:1881.
 
-  - **VanPi App API**: Node.js API serving the React application ([GitHub project](https://github.com/coconup/vanpi-app-api)). Access it at http://raspberrypi.local:3001.
+  - **nomadPi App API**: Node.js API serving the React application ([GitHub project](https://github.com/coconup/nomadpi-app-api)). Access it at http://raspberrypi.local:3001.
     
 
 #### Additional Services
@@ -185,6 +175,6 @@ Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-
 
 If you feel like it, you can financially support the project in one of these ways:
 
-- Make a monthly contribution through [Patreon](https://www.patreon.com/vanautomation)
+- Make a monthly contribution through [Patreon](https://www.patreon.com/nomadpi)
 - Make a one-time donation via [Paypal](https://www.paypal.com/donate/?hosted_button_id=FPWJT97N4PFGY)
-- Purchase supported hardware through the [affiliate links above](https://github.com/coconup/vanpi-docker-stack?tab=readme-ov-file#supported-hardware)
+- Purchase supported hardware through the [affiliate links above](https://github.com/coconup/nomadpi?tab=readme-ov-file#supported-hardware)
