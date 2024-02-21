@@ -102,6 +102,7 @@ Any camera compatible with Frigate is supported. Some examples below.
 Vendor | Description | Purchase links
 --- | --- | ---
 Reolink | Any Reolink camera | - [RLC-520A](https://www.amazon.com/REOLINK-Security-Outdoor-Surveillance-Detection/dp/B08LKC9BJ8?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=cc85f054aff52c734b7f7b91f532a749&camp=1789&creative=9325)<br/>- [Other Reolink cameras](https://www.amazon.com/s?k=reolink+camera&crid=86W8UXMWSP04&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=f78d0a4f61cc4ba43a8f1cb2c164cb47&camp=1789&creative=9325)
+Google Coral | Edge TPU, highly recommended for speeding up object recognition in Frigate | - [link](https://www.amazon.com/Google-Coral-Accelerator-coprocessor-Raspberry/dp/B07R53D12W?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=c21da0c876d9fdf016001ab93d08c74f&camp=1789&creative=9325)
 
 #### Heaters
 
