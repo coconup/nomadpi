@@ -84,7 +84,7 @@ services:
       # - ./volumes/vanpi-core-api/scripts:/scripts
     - ./data/scripts:/scripts
     - /var/run/docker.sock:/var/run/docker.sock
-    - /run/dbus:/run/dbus:ro
+      # - /run/dbus:/run/dbus:ro
     - /sys:/sys
     - /dev:/dev
     - /lib/udev/rules.d:/lib/udev/rules.d
@@ -346,6 +346,22 @@ services:
     - nextcloud_username
     - nextcloud_password
   
+  ble-to-mqtt:
+    container_name: ble-to-mqtt
+    build:
+      context: ./services/ble-to-mqtt
+    restart: unless-stopped
+    environment:
+      MQTT_HOST: "mosquitto"
+      MQTT_TOPIC: "ble_to_mqtt"
+    volumes:
+    - ./volumes/ble-to-mqtt:/app
+    - /run/dbus:/run/dbus:ro
+    ports:
+    - "5005:5000"
+    depends_on:
+    - mosquitto
+
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:latest
