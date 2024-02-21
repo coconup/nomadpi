@@ -68,7 +68,7 @@ Check out [this article](https://coconup.medium.com/lithium-on-the-cheap-build-a
 Vendor | Description | Purchase links
 --- | --- | ---
 JBD BMS | JBD BMS's with bluetooth connection | - [100-150A](https://s.click.aliexpress.com/e/_DmvUcU1)<br>- [200A](https://s.click.aliexpress.com/e/_DBEQQeN)
-Liontron | LiFePo4 batteries with bluetooth connection | - [🇩🇪 100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)<br />[🇬🇧 100Ah](https://www.ebay.co.uk/itm/156069074273?mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1)
+Liontron | LiFePo4 batteries with bluetooth connection | - [🇩🇪 100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)<br />- [🇬🇧 100Ah](https://www.ebay.co.uk/itm/156069074273?mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1)
 
 #### Solar chargers
 
