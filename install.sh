@@ -30,11 +30,10 @@ cd "$current_dir"
 
 clone_nodered_project() {
     local repo_name=$1
-    mkdir -p "volumes/$repo_name/data/projects"
+    mkdir -p "volumes/$repo_name/data/"
+    cp -r "services/$repo_name/data" "volumes/$repo_name/"
+    mkdir "volumes/$repo_name/data/projects"
     git clone "git@github.com:coconup/$repo_name" "volumes/$repo_name/data/projects/$repo_name"
-    cd "volumes/$repo_name/data/projects/$repo_name"
-    npm install
-    cd "$current_dir"
 }
 
 clone_nodered_project "nomadpi-core-api"
