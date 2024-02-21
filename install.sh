@@ -54,6 +54,15 @@ echo 'Generating environment variables'
 source ./generate_envrc.sh
 echo "REACT_APP_RPI_HOSTNAME=${RPI_HOSTNAME}" > volumes/vanpi-react/.env
 
+# Initialize secret files
+echo 'Initializing docker secrets'
+mkdir -p volumes/secrets/cloudflare
+mkdir -p volumes/secrets/nextcloud
+touch volumes/secrets/cloudflare/tunnel_token
+touch volumes/secrets/nextcloud/nextcloud_host
+touch volumes/secrets/nextcloud/nextcloud_username
+touch volumes/secrets/nextcloud/nextcloud_password
+
 # Enable I2C and 1-Wire
 echo 'Enabling I2C and 1-Wire'
 sudo raspi-config nonint do_i2c 0
