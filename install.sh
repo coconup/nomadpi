@@ -1,7 +1,5 @@
 #!/bin/bash
 
-current_dir=$(pwd)
-
 sudo apt update
 sudo apt upgrade -y
 sudo apt install -y \
@@ -11,7 +9,13 @@ sudo apt install -y \
     nodejs \
     npm
 
-echo 'Cloning VanPi stack repositories'
+echo 'Cloning nomadPi repositories'
+
+cd "$HOME"
+git clone git@github.com:coconup/nomadpi.git
+
+cd "nomadpi"
+install_dir=$(pwd)
 
 mkdir volumes
 git clone git@github.com:coconup/nomadpi-app-api.git volumes/nomadpi-app-api
@@ -26,7 +30,7 @@ git clone git@github.com:coconup/nomadpi-ble-to-mqtt volumes/nomadpi-ble-to-mqtt
 cd volumes/nomadpi-ble-to-mqtt
 ./install.sh
 
-cd "$current_dir"
+cd "$install_dir"
 
 clone_nodered_project() {
     local repo_name=$1
@@ -51,7 +55,7 @@ mkdir -p "$(dirname "$direnv_config_file")"
 # Configure direnv to always allow .envrc
 cat <<EOF > "$direnv_config_file"
 [whitelist]
-prefix = ["$current_dir"]
+prefix = ["$install_dir"]
 EOF
 
 # Create .envrc file
