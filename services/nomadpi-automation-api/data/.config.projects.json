@@ -1,0 +1,8 @@
+{
+    "projects": {
+        "vanpi-automation-api": {
+            "credentialSecret": false
+        }
+    },
+    "activeProject": "nomadpi-automation-api"
+}
