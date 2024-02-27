@@ -340,22 +340,18 @@ services:
     - nextcloud_host
     - nextcloud_username
     - nextcloud_password
-  
-  nomadpi-ble-to-mqtt:
-    container_name: nomadpi-ble-to-mqtt
+
+  nomadpi-bluetooth-api:
+    container_name: nomadpi-bluetooth-api
     build:
-      context: ./services/nomadpi-ble-to-mqtt
+      context: ./services/nomadpi-bluetooth-api
     restart: unless-stopped
-    environment:
-      MQTT_HOST: "mosquitto"
-      MQTT_TOPIC: "ble_to_mqtt"
     volumes:
-    - ./volumes/nomadpi-ble-to-mqtt:/app
+    - ./volumes/nomadpi-bluetooth-api:/app
     - /run/dbus:/run/dbus:ro
     ports:
-    - "5005:5000"
-    depends_on:
-    - mosquitto
+    - "5007:5007"
+    command: sh -c "python3 server.py"
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
