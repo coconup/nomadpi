@@ -1,0 +1,8 @@
+{
+    "projects": {
+        "nomadpi-core-api": {
+            "credentialSecret": false
+        }
+    },
+    "activeProject": "nomadpi-core-api"
+}

@@ -94,7 +94,7 @@ EOF
 # Create .envrc file
 echo 'Generating environment variables'
 source ./generate_envrc.sh
-echo "REACT_APP_RPI_HOSTNAME=$(hostname).local" > "$install_dir/volumes/nomadpi-react/.env"
+echo "REACT_APP_RPI_HOSTNAME=${RPI_HOSTNAME}" > volumes/nomadpi-react/.env
 
 # Initialize secret files
 echo 'Initializing docker secrets'

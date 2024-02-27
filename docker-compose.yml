@@ -73,20 +73,14 @@ services:
     ports:
     - "1880:1880"
     devices:
-    - /dev:/dev
-      #- /dev/mem:/dev/mem
-      # - /dev/gpiomem:/dev/gpiomem
-      #- /dev/i2c-1:/dev/i2c-1
+    - /dev/i2c-1:/dev/i2c-1
     volumes:
     - ./volumes/nomadpi-core-api/data:/data
     - ./volumes/nomadpi-core-api/ssh:/root/.ssh
     - ./volumes/secrets:/secrets
-      # - ./volumes/nomadpi-core-api/scripts:/scripts
     - ./data/scripts:/scripts
     - /var/run/docker.sock:/var/run/docker.sock
-      # - /run/dbus:/run/dbus:ro
-    - /sys:/sys
-    - /dev:/dev
+    - /dev/i2c-1:/dev/i2c-1
     - /lib/udev/rules.d:/lib/udev/rules.d
   
   nomadpi-automation-api:
@@ -293,11 +287,12 @@ services:
     restart: unless-stopped
     image: ghcr.io/blakeblackshear/frigate:stable
     shm_size: "128mb"
-    devices:
-      - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, needs to be modified for other versions
-      - /dev/apex_0:/dev/apex_0 # passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
-      - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
+      # devices:
+        # - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, needs to be modified for other versions
+        # - /dev/apex_0:/dev/apex_0 # passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
+        # - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
     volumes:
+      - /dev/bus/usb:/dev/bus/usb
       - /etc/localtime:/etc/localtime:ro
       - ./volumes/frigate/config:/config
       - ./volumes/frigate/storage:/media/frigate
