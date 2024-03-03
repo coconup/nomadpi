@@ -15,4 +15,4 @@ COPY ./requirements.txt /app/requirements.txt
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
+EXPOSE 5007

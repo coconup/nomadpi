@@ -60,14 +60,12 @@ services:
       GPIOD_HOST: 127.0.0.1
       PEKAWAY_SCRIPTS_PATH: /scripts
       HTTP_API_BASE_PATH: api
-      NOMADPI_APP_API_ALLOWED_DOMAINS: ${NOMADPI_APP_API_ALLOWED_DOMAINS}
       DB_HOST: 127.0.0.1
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
-      MICROPHONE_UDEV_KEY: ${MICROPHONE_UDEV_KEY}
       HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
       SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
     ports:
@@ -340,22 +338,21 @@ services:
     - nextcloud_host
     - nextcloud_username
     - nextcloud_password
-  
-  nomadpi-ble-to-mqtt:
-    container_name: nomadpi-ble-to-mqtt
+
+  nomadpi-bluetooth-api:
+    container_name: nomadpi-bluetooth-api
+    privileged: true
     build:
-      context: ./services/nomadpi-ble-to-mqtt
+      context: ./services/nomadpi-bluetooth-api
     restart: unless-stopped
-    environment:
-      MQTT_HOST: "mosquitto"
-      MQTT_TOPIC: "ble_to_mqtt"
     volumes:
-    - ./volumes/nomadpi-ble-to-mqtt:/app
+    - ./volumes/nomadpi-bluetooth-api:/app
     - /run/dbus:/run/dbus:ro
     ports:
-    - "5005:5000"
-    depends_on:
-    - mosquitto
+    - "5007:5007"
+    command: sh -c "python3 -m flask --app server run --host=0.0.0.0 --port=5007"
+    # environment:
+    #   BLEAK_LOGGING: 1
 
   zigbee2mqtt:
     container_name: zigbee2mqtt

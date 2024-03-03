@@ -1,3 +1,6 @@
-bleak
+gatt
 crcmod
-aiohttp
+flask
+dbus-python
+pycairo
+PyGObject
