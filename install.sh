@@ -34,7 +34,10 @@ sudo apt install -y \
     direnv \
     nodejs \
     npm \
-    jq
+    jq \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common
 
 echo 'Cloning nomadPi repositories'
 
@@ -58,10 +61,7 @@ git clone git@github.com:coconup/nomadpi-mqtt-hub.git "$install_dir"/volumes/nom
 git clone git@github.com:coconup/nomadpi-gpsd-to-mqtt.git "$install_dir"/volumes/nomadpi-gpsd-to-mqtt
 git clone git@github.com:coconup/nomadpi-butterfly-ai "$install_dir"/volumes/nomadpi-butterfly-ai
 git clone git@github.com:coconup/nomadpi-open-wake-word "$install_dir"/volumes/nomadpi-open-wake-word
-git clone git@github.com:coconup/nomadpi-ble-to-mqtt "$install_dir"/volumes/nomadpi-ble-to-mqtt
-
-cd volumes/nomadpi-ble-to-mqtt
-./install.sh
+git clone git@github.com:coconup/nomadpi-bluetooth-api "$install_dir"/volumes/nomadpi-bluetooth-api
 
 cd "$install_dir" || exit 1
 
@@ -117,7 +117,20 @@ if [ -e "/etc/dhcpcd.conf" ]; then
     sudo bash -c '[ $(egrep -c "^allowinterfaces eth\*,wlan\*" /etc/dhcpcd.conf) -eq 0 ] && echo "allowinterfaces eth*,wlan*" >> /etc/dhcpcd.conf'
 fi
 
-# Install docker
-echo 'Installing `docker`` and `docker-compose`'
-cd /tmp
-curl -fsSL https://raw.githubusercontent.com/SensorsIot/IOTstack/master/install.sh | bash
+# Install Docker
+curl -fsSL https://get.docker.com | sudo sh
+
+# Add the current user to the docker group to run Docker without sudo
+sudo usermod -G docker bluetooth -a $USER
+
+# Verify installation
+docker --version
+docker-compose --version
+
+# Change to the directory containing your Docker Compose project
+cd "$install_dir"
+
+# Run docker-compose up
+docker-compose up -d
+
+sudo reboot
