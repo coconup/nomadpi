@@ -94,7 +94,7 @@ EOF
 # Create .envrc file
 echo 'Generating environment variables'
 source ./generate_envrc.sh
-echo "REACT_APP_RPI_HOSTNAME=${RPI_HOSTNAME}" > volumes/nomadpi-react/.env
+echo "REACT_APP_RPI_HOSTNAME=$(hostname).local" > "$install_dir"/volumes/nomadpi-react/.env
 
 # Initialize secret files
 echo 'Initializing docker secrets'
@@ -121,16 +121,46 @@ fi
 curl -fsSL https://get.docker.com | sudo sh
 
 # Add the current user to the docker group to run Docker without sudo
-sudo usermod -G docker bluetooth -a $USER
+sudo usermod -aG docker $USER
+sudo usermod -aG bluetooth $USER
 
 # Verify installation
 docker --version
+
+sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
+
 docker-compose --version
 
 # Change to the directory containing your Docker Compose project
-cd "$install_dir"
+start_script_path="$HOME"/start_nomadpi.sh
 
-# Run docker-compose up
+cat <<EOL > "$start_script_path"
+#!/bin/bash
+
+cd $install_dir || exit 1
 docker-compose up -d
+EOL
+
+# Make the script executable
+chmod +x "$start_script_path"
+
+# Set the content of the nomadpi.service file
+cat <<EOL > nomadpi.service
+[Unit]
+Description=Start nomadPi
+
+[Service]
+Type=simple
+ExecStart=$start_script_path
+
+[Install]
+WantedBy=default.target
+EOL
+
+sudo mv nomadpi.service /etc/systemd/system/
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable nomadpi.service
 
 sudo reboot
