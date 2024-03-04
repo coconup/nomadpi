@@ -2,165 +2,178 @@
 
 set -e  # Exit script on any error
 
-# Function for handling errors
+logfile="/tmp/nomadpi_install.log"
+progress_file="/tmp/nomadpi_install_progress.log"
+
+GREY='\033[90m'
+GREEN='\033[0;32m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+if [ -e "$logfile" ]; then
+    rm "$logfile"
+fi
+
+if [ -e "$progress_file" ]; then
+    rm "$progress_file"
+fi
+
+if [ -d "./nomadpi" ]; then
+    echo -e "${BOLD}Error: nomadpi directory already exists. Remove it if you want to re-run the installation script.${NC}"
+    exit 1
+fi
+
+update_progress() {
+  echo $1 >> "$progress_file"
+}
+
+error_exit() {
+  echo -e "${BOLD}ERROR: Installation failed. Full log available at $logfile${NC}" >&1
+  echo -e "" >&1
+  tail -n 25 "$logfile" >&1
+}
+
 handle_error() {
-    local exit_code=$?
-    echo "Error occurred in command: $BASH_COMMAND"
-    echo "Exit code: $exit_code"
+    error_exit
     exit $exit_code
 }
 
-# Function to display the tail of a file with custom message and colors
-display_tail() {
-    local file=$1
-    local message=$2
-    echo -e "\e[94m$message\e[0m"  # Light blue color for echo
-    tail -n 10 "$file" | awk '{print "\033[37m" $0 "\033[0m"}'  # Light grey color for tail
-}
-
-# Redirecting stdout and stderr to a temporary file
-# exec > >(tee -i /tmp/script_stdout.log)
-# exec 2> >(tee -i /tmp/script_stderr.log >&2)
-
 trap 'handle_error' ERR
 
-sudo apt update
-# display_tail "/tmp/script_stdout.log" "Updating packages"
-sudo apt upgrade -y
-# display_tail "/tmp/script_stdout.log" "Installing dependencies"
-sudo apt install -y \
-    python3-setuptools \
-    vim \
-    direnv \
-    nodejs \
-    npm \
-    jq \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common
+(
+    update_progress 'Installing system dependencies'
 
-echo 'Cloning nomadPi repositories'
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt install -y \
+        python3-setuptools \
+        vim \
+        direnv \
+        nodejs \
+        npm \
+        jq \
+        apt-transport-https \
+        ca-certificates \
+        software-properties-common
 
-cd "$HOME" || exit 1
+    update_progress 'Cloning nomadPi repositories'
 
-mkdir -p "$HOME"/.ssh
-curl --silent https://api.github.com/meta | jq --raw-output '"github.com "+.ssh_keys[]' >> "$HOME"/.ssh/known_hosts
+    cd "$HOME" || exit 1
 
-git clone git@github.com:coconup/nomadpi.git
+    mkdir -p "$HOME"/.ssh
+    curl --silent https://api.github.com/meta | jq --raw-output '"github.com "+.ssh_keys[]' >> "$HOME"/.ssh/known_hosts
 
-cd "nomadpi" || exit 1
-install_dir=$(pwd)
+    git clone --progress git@github.com:coconup/nomadpi.git >> "$logfile" 2>&1
 
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+    cd "nomadpi" || exit 1
+    install_dir=$(pwd)
 
-mkdir -p "$install_dir"/volumes
-git clone git@github.com:coconup/nomadpi-app-api.git "$install_dir"/volumes/nomadpi-app-api
-git clone git@github.com:coconup/nomadpi-services-api.git "$install_dir"/volumes/nomadpi-services-api
-git clone git@github.com:coconup/nomadpi-react.git "$install_dir"/volumes/nomadpi-react
-git clone git@github.com:coconup/nomadpi-mqtt-hub.git "$install_dir"/volumes/nomadpi-mqtt-hub
-git clone git@github.com:coconup/nomadpi-gpsd-to-mqtt.git "$install_dir"/volumes/nomadpi-gpsd-to-mqtt
-git clone git@github.com:coconup/nomadpi-butterfly-ai "$install_dir"/volumes/nomadpi-butterfly-ai
-git clone git@github.com:coconup/nomadpi-open-wake-word "$install_dir"/volumes/nomadpi-open-wake-word
-git clone git@github.com:coconup/nomadpi-bluetooth-api "$install_dir"/volumes/nomadpi-bluetooth-api
+    ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-cd "$install_dir" || exit 1
+    mkdir -p "$install_dir"/volumes
+    git clone --progress git@github.com:coconup/nomadpi-app-api.git "$install_dir"/volumes/nomadpi-app-api >> "$logfile" 2>&1
+    git clone --progress git@github.com:coconup/nomadpi-services-api.git "$install_dir"/volumes/nomadpi-services-api >> "$logfile" 2>&1
+    git clone --progress git@github.com:coconup/nomadpi-react.git "$install_dir"/volumes/nomadpi-react >> "$logfile" >&1
+    git clone --progress git@github.com:coconup/nomadpi-mqtt-hub.git "$install_dir"/volumes/nomadpi-mqtt-hub >> "$logfile" 2>&1
+    git clone --progress git@github.com:coconup/nomadpi-gpsd-to-mqtt.git "$install_dir"/volumes/nomadpi-gpsd-to-mqtt >> "$logfile" 2>&1
+    git clone --progress git@github.com:coconup/nomadpi-butterfly-ai "$install_dir"/volumes/nomadpi-butterfly-ai >> "$logfile" 2>&1
+    git clone --progress git@github.com:coconup/nomadpi-open-wake-word "$install_dir"/volumes/nomadpi-open-wake-word >> "$logfile" 2>&1
+    git clone --progress git@github.com:coconup/nomadpi-bluetooth-api "$install_dir"/volumes/nomadpi-bluetooth-api >> "$logfile" 2>&1
 
-clone_nodered_project() {
-    local repo_name=$1
-    mkdir -p "$install_dir/volumes/$repo_name/data/"
-    cp -r "$install_dir/services/$repo_name/data" "$install_dir/volumes/$repo_name/"
-    mkdir "$install_dir/volumes/$repo_name/data/projects"
-    git clone "git@github.com:coconup/$repo_name" "$install_dir/volumes/$repo_name/data/projects/$repo_name"
-}
+    cd "$install_dir" || exit 1
 
-clone_nodered_project "nomadpi-core-api"
-clone_nodered_project "nomadpi-automation-api"
+    clone_nodered_project() {
+        local repo_name=$1
+        mkdir -p "$install_dir/volumes/$repo_name/data/"
+        cp -r "$install_dir/services/$repo_name/data" "$install_dir/volumes/$repo_name/"
+        mkdir "$install_dir/volumes/$repo_name/data/projects"
+        git clone "git@github.com:coconup/$repo_name" "$install_dir/volumes/$repo_name/data/projects/$repo_name"
+    }
 
-# Add direnv to .bashrc
-echo 'Setting up `direnv``'
-echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+    clone_nodered_project "nomadpi-core-api"
+    clone_nodered_project "nomadpi-automation-api"
 
-direnv_config_file="$HOME/.config/direnv/config.toml"
+    # Add direnv to .bashrc
+    update_progress 'Setting up local environment'
 
-# Create the directory if it doesn't exist
-mkdir -p "$(dirname "$direnv_config_file")"
+    echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
 
-# Configure direnv to always allow .envrc
-cat <<EOF > "$direnv_config_file"
+    direnv_config_file="$HOME/.config/direnv/config.toml"
+
+    # Create the directory if it doesn't exist
+    mkdir -p "$(dirname "$direnv_config_file")"
+
+    # Configure direnv to always allow .envrc
+    cat <<EOF > "$direnv_config_file"
 [whitelist]
 prefix = ["$install_dir"]
 EOF
 
-# Create .envrc file
-echo 'Generating environment variables'
-source ./generate_envrc.sh
-echo "REACT_APP_RPI_HOSTNAME=$(hostname).local" > "$install_dir"/volumes/nomadpi-react/.env
+    # Create .envrc file
+    source ./generate_envrc.sh
+    echo "REACT_APP_RPI_HOSTNAME=$(hostname).local" > "$install_dir"/volumes/nomadpi-react/.env
 
-# Initialize secret files
-echo 'Initializing docker secrets'
-mkdir -p volumes/secrets/cloudflare
-mkdir -p volumes/secrets/nextcloud
-touch volumes/secrets/cloudflare/tunnel_token
-touch volumes/secrets/nextcloud/nextcloud_host
-touch volumes/secrets/nextcloud/nextcloud_username
-touch volumes/secrets/nextcloud/nextcloud_password
+    # Initialize secret files
+    mkdir -p volumes/secrets/cloudflare
+    mkdir -p volumes/secrets/nextcloud
+    touch volumes/secrets/cloudflare/tunnel_token
+    touch volumes/secrets/nextcloud/nextcloud_host
+    touch volumes/secrets/nextcloud/nextcloud_username
+    touch volumes/secrets/nextcloud/nextcloud_password
 
-# Enable I2C and 1-Wire
-echo 'Enabling I2C and 1-Wire'
-sudo raspi-config nonint do_i2c 0
-echo -e "dtoverlay=w1-gpio\ndtoverlay=uart5\nenable_uart=1" | sudo tee -a /boot/config.txt
+    # Enable I2C and 1-Wire
+    update_progress 'Enabling I2C and 1-Wire'
 
-# Docker patches
-echo 'Patching system for `docker` compatibility'
-echo $(cat /boot/cmdline.txt) cgroup_memory=1 cgroup_enable=memory | sudo tee /boot/cmdline.txt
-if [ -e "/etc/dhcpcd.conf" ]; then
-    sudo bash -c '[ $(egrep -c "^allowinterfaces eth\*,wlan\*" /etc/dhcpcd.conf) -eq 0 ] && echo "allowinterfaces eth*,wlan*" >> /etc/dhcpcd.conf'
-fi
+    sudo raspi-config nonint do_i2c 0
+    echo -e "dtoverlay=w1-gpio\ndtoverlay=uart5\nenable_uart=1" | sudo tee -a /boot/config.txt
 
-# Install Docker
-curl -fsSL https://get.docker.com | sudo sh
+    # Docker patches
+    update_progress 'Patching system for Docker compatibility'
 
-# Add the current user to the docker group to run Docker without sudo
-sudo usermod -aG docker $USER
-sudo usermod -aG bluetooth $USER
+    echo $(cat /boot/cmdline.txt) cgroup_memory=1 cgroup_enable=memory | sudo tee /boot/cmdline.txt
+    if [ -e "/etc/dhcpcd.conf" ]; then
+        sudo bash -c '[ $(egrep -c "^allowinterfaces eth\*,wlan\*" /etc/dhcpcd.conf) -eq 0 ] && echo "allowinterfaces eth*,wlan*" >> /etc/dhcpcd.conf'
+    fi
 
-# Verify installation
-docker --version
+    # Install Docker
+    update_progress 'Installing Docker and `docker-compose`'
 
-sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
+    curl -fsSL https://get.docker.com | sudo sh >> "$logfile" 2>&1
 
-docker-compose --version
+    # Add the current user to the docker group to run Docker without sudo
+    sudo usermod -aG docker $USER
+    sudo usermod -aG bluetooth $USER
 
-# Change to the directory containing your Docker Compose project
-start_script_path="$HOME"/start_nomadpi.sh
+    # Verify installation
+    docker --version
 
-cat <<EOL > "$start_script_path"
-#!/bin/bash
+    sudo ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
 
-cd $install_dir || exit 1
-docker-compose up -d
-EOL
+    docker-compose --version
 
-# Make the script executable
-chmod +x "$start_script_path"
+    update_progress 'Rebooting system. After reboot, run ~/nomadpi/start.sh in order to complete the installation'
 
-# Set the content of the nomadpi.service file
-cat <<EOL > nomadpi.service
-[Unit]
-Description=Start nomadPi
+    sleep 5
 
-[Service]
-Type=simple
-ExecStart=$start_script_path
+    sudo reboot
+) >> "$logfile" & bg_job_pid=$!
 
-[Install]
-WantedBy=default.target
-EOL
+while [ -e /proc/$bg_job_pid ]; do
+  clear
 
-sudo mv nomadpi.service /etc/systemd/system/
+  head -n -1 "$progress_file" | while IFS= read -r line; do
+    echo -e "${GREEN}${line} ✅${NC}"
+  done
 
-sudo systemctl daemon-reload
+  echo -e "${BOLD}$(tail -n 1 "$progress_file")...${NC}"
 
-sudo systemctl enable nomadpi.service
+  tail -n 10 "$logfile" | while IFS= read -r line; do
+    echo -e "${GREY}${line}${NC}"
+  done
 
-sudo reboot
+  sleep 2
+done
+
+tail -n 10 "$logfile" | while IFS= read -r line; do
+    echo -e "${GREY}${line}${NC}"
+done

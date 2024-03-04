@@ -154,7 +154,8 @@ services:
     ports:
     - "3001:3001"
     depends_on:
-    - mariadb
+      mariadb:
+        condition: service_healthy
     restart: unless-stopped
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
@@ -180,8 +181,7 @@ services:
     ports:
     - "3002:3000"
     depends_on:
-    - mariadb
-    - nomadpi-app-api
+      - nomadpi-app-api
     restart: unless-stopped
     network_mode: host
     environment:
@@ -200,7 +200,7 @@ services:
     volumes:
     - ./volumes/nomadpi-mqtt-hub/src:/usr/src/app
     depends_on:
-    - mariadb
+    - nomadpi-app-api
     - mosquitto
     restart: unless-stopped
     environment:
