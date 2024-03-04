@@ -3,8 +3,22 @@ GREEN='\033[0;32m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
-docker-compose up -d mariadb && \
-docker-compose up -d
+docker-compose build 
+docker-compose up -d \
+    portainer-ce \
+    portainer_agent \
+    nomadpi-core-api \
+    nomadpi-automation-api \
+    mosquitto \
+    mariadb \
+    nomadpi-react \
+    nomadpi-app-api \
+    nomadpi-services-api \
+    nomadpi-mqtt-hub \
+    nomadpi-butterfly-ai \
+    nomadpi-open-wake-word \
+    frigate \
+    nomadpi-bluetooth-api
 
 echo -e "${BOLD}Services successfully started${NC}"
 echo -e "${GREEN}Frontend:           http://$(hostname).local:3000${NC}"
