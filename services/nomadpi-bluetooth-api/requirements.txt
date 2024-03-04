@@ -4,3 +4,5 @@ flask
 dbus-python
 pycairo
 PyGObject
+bleak
+aiohttp
