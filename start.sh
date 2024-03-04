@@ -5,7 +5,7 @@ NC='\033[0m' # No Color
 
 docker-compose build 
 docker-compose --profile core up -d
-docker-compose --profile accessory up -d
+docker-compose --profile core --profile accessory up -d
 
 echo -e "${BOLD}Services successfully started${NC}"
 echo -e "${GREEN}Frontend:           http://$(hostname).local:3000${NC}"
