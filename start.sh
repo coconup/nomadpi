@@ -4,21 +4,8 @@ BOLD='\033[1m'
 NC='\033[0m' # No Color
 
 docker-compose build 
-docker-compose up -d \
-    portainer-ce \
-    portainer_agent \
-    nomadpi-core-api \
-    nomadpi-automation-api \
-    mosquitto \
-    mariadb \
-    nomadpi-react \
-    nomadpi-app-api \
-    nomadpi-services-api \
-    nomadpi-mqtt-hub \
-    nomadpi-butterfly-ai \
-    nomadpi-open-wake-word \
-    frigate \
-    nomadpi-bluetooth-api
+docker-compose --profile core up -d
+docker-compose --profile accessory up -d
 
 echo -e "${BOLD}Services successfully started${NC}"
 echo -e "${GREEN}Frontend:           http://$(hostname).local:3000${NC}"
