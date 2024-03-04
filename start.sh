@@ -7,7 +7,7 @@ docker-compose build
 docker-compose --profile core up -d
 docker-compose --profile core --profile accessory up -d
 
-echo -e "${BOLD}Services successfully started${NC}"
+echo -e "${BOLD}nomadPi services successfully started${NC}"
 echo -e "${GREEN}Frontend:           http://$(hostname).local:3000${NC}"
 echo -e "${GREY}---------------------------------------------${NC}"
 echo -e "Portainer:          http://$(hostname).local:9000"

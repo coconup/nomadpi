@@ -65,7 +65,6 @@ services:
     environment:
       TZ: ${TZ:-Etc/UTC}
       NODE_RED_ENABLE_PROJECTS: "true"
-      GPIOD_HOST: 127.0.0.1
       SCRIPTS_PATH: /scripts
       HTTP_API_BASE_PATH: api
       DB_HOST: 127.0.0.1

@@ -80,6 +80,10 @@ trap 'handle_error' ERR
     git clone --progress git@github.com:coconup/nomadpi-open-wake-word "$install_dir"/volumes/nomadpi-open-wake-word >> "$logfile" 2>&1
     git clone --progress git@github.com:coconup/nomadpi-bluetooth-api "$install_dir"/volumes/nomadpi-bluetooth-api >> "$logfile" 2>&1
 
+    mkdir -p "$install_dir"/volumes/frigate/config
+
+    cp "$install_dir"/services/frigate/config.yml "$install_dir"/volumes/frigate/config/config.yml
+
     cd "$install_dir" || exit 1
 
     clone_nodered_project() {
@@ -162,7 +166,7 @@ while [ -e /proc/$bg_job_pid ]; do
   clear
 
   head -n -1 "$progress_file" | while IFS= read -r line; do
-    echo -e "${GREEN}${line} ✅${NC}"
+    echo -e "${GREEN}${line} ✔${NC}"
   done
 
   echo -e "${BOLD}$(tail -n 1 "$progress_file")...${NC}"
