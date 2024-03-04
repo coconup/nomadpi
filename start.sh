@@ -3,6 +3,7 @@ GREEN='\033[0;32m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
+docker-compose up -d mariadb && \
 docker-compose up -d
 
 echo -e "${BOLD}Services successfully started${NC}"
