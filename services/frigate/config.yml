@@ -1,0 +1,35 @@
+mqtt:
+  enabled: true
+  host: mosquitto
+  port: 1883
+  topic_prefix: frigate
+  stats_interval: 60
+
+# detectors:
+#  coral:
+#    type: edgetpu
+#    device: usb
+
+cameras:
+  my_camera:
+    enabled: false 
+    ffmpeg:
+      inputs:
+        - path: rtsp://my_camera_address
+          roles:
+            - detect
+
+motion:
+  mqtt_off_delay: 3
+
+record:
+  enabled: true
+  sync_recordings: true
+
+snapshots:
+  enabled: true
+
+timestamp_style:
+  position: "tl"
+  format: "%Y-%m-%d %H:%M:%S"
+  effect: solid
