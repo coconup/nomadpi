@@ -61,32 +61,30 @@ services:
       context: ./services/nomadpi-core-api/.
     restart: unless-stopped
     user: "0"
-    network_mode: "host"
     environment:
       TZ: ${TZ:-Etc/UTC}
       NODE_RED_ENABLE_PROJECTS: "true"
       SCRIPTS_PATH: /scripts
-      HTTP_API_BASE_PATH: api
-      DB_HOST: 127.0.0.1
+      DB_HOST: mariadb
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
       HUB_MQTT_TOPIC: ${HUB_MQTT_TOPIC}
-      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
+      SERVICES_API_ROOT_URL: "http://nomadpi-services-api:3002"
     ports:
-    - "1880:1880"
+      - "1880:1880"
     devices:
-    - /dev/i2c-1:/dev/i2c-1
+      - /dev/i2c-1:/dev/i2c-1
     volumes:
-    - ./volumes/nomadpi-core-api/data:/data
-    - ./volumes/nomadpi-core-api/ssh:/root/.ssh
-    - ./volumes/secrets:/secrets
-    - ./data/scripts:/scripts
-    - /var/run/docker.sock:/var/run/docker.sock
-    - /dev/i2c-1:/dev/i2c-1
-    - /lib/udev/rules.d:/lib/udev/rules.d
+      - ./volumes/nomadpi-core-api/data:/data
+      - ./volumes/nomadpi-core-api/ssh:/root/.ssh
+      - ./volumes/secrets:/secrets
+      - ./data/scripts:/scripts
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/i2c-1:/dev/i2c-1
+      - /lib/udev/rules.d:/lib/udev/rules.d
   
   nomadpi-automation-api:
     profiles:
@@ -95,17 +93,15 @@ services:
     image: nodered/node-red
     restart: unless-stopped
     user: "0"
-    network_mode: "host"
     environment:
       TZ: ${TZ:-Etc/UTC}
       NODE_RED_ENABLE_PROJECTS: "true"
       PORT: 1881
-      CORE_API_URL: http://127.0.0.1:1880/api/v1
+      CORE_API_URL: "http://nomadpi-core-api:1880/api/v1"
     ports:
-    - "1881:1881"
+      - "1881:1881"
     volumes:
-    - ./volumes/nomadpi-automation-api/data:/data
-    - ./volumes/nomadpi-core-api/ssh:/root/.ssh
+      - ./volumes/nomadpi-automation-api/data:/data
 
   mosquitto:
     profiles:
@@ -117,14 +113,14 @@ services:
       - MOSQUITTO_BASE=eclipse-mosquitto:latest
     restart: unless-stopped
     environment:
-    - TZ=${TZ:-Etc/UTC}
+      - TZ=${TZ:-Etc/UTC}
     ports:
-    - "1883:1883"
+      - "1883:1883"
     volumes:
-    - ./volumes/mosquitto/config:/mosquitto/config
-    - ./volumes/mosquitto/data:/mosquitto/data
-    - ./volumes/mosquitto/log:/mosquitto/log
-    - ./volumes/mosquitto/pwfile:/mosquitto/pwfilie
+      - ./volumes/mosquitto/config:/mosquitto/config
+      - ./volumes/mosquitto/data:/mosquitto/data
+      - ./volumes/mosquitto/log:/mosquitto/log
+      - ./volumes/mosquitto/pwfile:/mosquitto/pwfilie
   
   mariadb:
     profiles:
@@ -140,10 +136,10 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-    - ./volumes/mariadb/config:/config
-    - ./volumes/mariadb/db_backup:/backup
+      - ./volumes/mariadb/config:/config
+      - ./volumes/mariadb/db_backup:/backup
     ports:
-    - "3306:3306"
+      - "3306:3306"
     restart: unless-stopped
 
   nomadpi-react:
@@ -154,9 +150,9 @@ services:
       context: ./services/nomadpi-react
     command: sh -c "cd /usr/src/app && npm install && npm start"
     volumes:
-    - ./volumes/nomadpi-react:/usr/src/app
+      - ./volumes/nomadpi-react:/usr/src/app
     ports:
-    - "3000:3000"
+      - "3000:3000"
     restart: unless-stopped
   
   nomadpi-app-api:
@@ -164,12 +160,11 @@ services:
       - core
     container_name: nomadpi-app-api
     image: node:21-alpine
-    network_mode: "host"
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/nomadpi-app-api/src:/usr/src/app
+      - ./volumes/nomadpi-app-api/src:/usr/src/app
     ports:
-    - "3001:3001"
+      - "3001:3001"
     depends_on:
       mariadb:
         condition: service_healthy
@@ -177,15 +172,16 @@ services:
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       RPI_HOSTNAME: ${RPI_HOSTNAME}
-      DB_HOST: "127.0.0.1"
+      DB_HOST: mariadb
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      CORE_API_ROOT_URL: "http://127.0.0.1:1880"
-      AUTOMATION_API_ROOT_URL: "http://127.0.0.1:1881"
-      BUTTERFLY_API_ROOT_URL: "http://127.0.0.1:3005"
-      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
-      FRIGATE_API_ROOT_URL: "http://127.0.0.1:5000"
+      CORE_API_ROOT_URL: "http://nomadpi-core-api:1880"
+      AUTOMATION_API_ROOT_URL: "http://nomadpi-automation-api:1881"
+      BUTTERFLY_API_ROOT_URL: "http://nomadpi-butterfly-ai:3005"
+      SERVICES_API_ROOT_URL: "http://nomadpi-services-api:3002"
+      FRIGATE_API_ROOT_URL: "http://frigate:5000"
+      OPEN_WAKE_WORD_WS_URL: "ws://nomadpi-open-wake-word:9002/ws"
       GPSD_UDEV_KEY: ${GPSD_UDEV_KEY}
       ZIGBEE_UDEV_KEY: ${ZIGBEE_UDEV_KEY}
   
@@ -196,21 +192,20 @@ services:
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/nomadpi-services-api:/usr/src/app
+      - ./volumes/nomadpi-services-api:/usr/src/app
     ports:
-    - "3002:3000"
+      - "3002:3000"
     depends_on:
       - nomadpi-app-api
     restart: unless-stopped
-    network_mode: host
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      DB_HOST: "127.0.0.1"
+      DB_HOST: mariadb
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       PORT: 3002
-      CORE_API_ROOT_URL: "http://127.0.0.1:1880"
+      CORE_API_ROOT_URL: "http://nomadpi-core-api:1880"
 
   nomadpi-mqtt-hub:
     profiles:
@@ -219,10 +214,10 @@ services:
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/nomadpi-mqtt-hub/src:/usr/src/app
+      - ./volumes/nomadpi-mqtt-hub/src:/usr/src/app
     depends_on:
-    - nomadpi-app-api
-    - mosquitto
+      - nomadpi-app-api
+      - mosquitto
     restart: unless-stopped
     environment:
       MQTT_BROKER_URL: mqtt://mosquitto:1883
@@ -239,10 +234,10 @@ services:
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
     volumes:
-    - ./volumes/nomadpi-gpsd-to-mqtt/src:/usr/src/app
+      - ./volumes/nomadpi-gpsd-to-mqtt/src:/usr/src/app
     depends_on:
-    - mosquitto
-    - gpsd
+      - mosquitto
+      - gpsd
     restart: unless-stopped
     environment:
       MQTT_BROKER: mqtt://mosquitto:1883
@@ -255,14 +250,14 @@ services:
     container_name: nomadpi-butterfly-ai
     image: node:21-alpine
     command: sh -c "cd /usr/src/app && npm install && node server.js"
-    network_mode: host
     volumes:
-    - ./volumes/nomadpi-butterfly-ai:/usr/src/app
+      - ./volumes/nomadpi-butterfly-ai:/usr/src/app
     restart: unless-stopped
     environment:
       DEBUG: 1
       PORT: "3005"
-      SERVICES_API_ROOT_URL: "http://127.0.0.1:3002"
+      SERVICES_API_ROOT_URL: "http://nomadpi-services-api:3002"
+      APP_API_ROOT_URL: "http://nomadpi-app-api:3001"
 
   # influxdb:
   #   container_name: influxdb
@@ -296,21 +291,20 @@ services:
     profiles:
       - core
     container_name: nomadpi-open-wake-word
-    network_mode: host
     build:
       context: ./services/nomadpi-open-wake-word
     volumes:
-    - ./volumes/nomadpi-open-wake-word:/app
+      - ./volumes/nomadpi-open-wake-word:/app
     command: sh -c "python3 streaming_server.py --model_path=./ok_nomadpi.onnx --inference_framework=onnx"
     ports:
-    - "9002:9002"
+      - "9002:9002"
     restart: unless-stopped
 
   frigate:
     profiles:
       - core
     container_name: frigate
-      # privileged: true
+    # privileged: true
     restart: unless-stopped
     image: ghcr.io/blakeblackshear/frigate:stable
     shm_size: "128mb"
@@ -342,9 +336,8 @@ services:
     build:
       context: ./services/cloudflared
     restart: unless-stopped
-    network_mode: "host"
     secrets:
-    - cloudflare_tunnel_token
+      - cloudflare_tunnel_token
 
   nextcloud-client:
     profiles:
@@ -364,27 +357,26 @@ services:
       NC_TRUST_CERT: 'false'
       NC_HIDDEN: 'false'
     volumes:
-    - ./volumes/mariadb:/media/nextcloud/mariadb
-    - ./volumes/influxdb:/media/nextcloud/influxdb
-    - ./volumes/frigate:/media/nextcloud/frigate
+      - ./volumes/mariadb:/media/nextcloud/mariadb
+      - ./volumes/influxdb:/media/nextcloud/influxdb
+      - ./volumes/frigate:/media/nextcloud/frigate
     secrets:
-    - nextcloud_host
-    - nextcloud_username
-    - nextcloud_password
+      - nextcloud_host
+      - nextcloud_username
+      - nextcloud_password
 
   nomadpi-bluetooth-api:
     profiles:
       - core
     container_name: nomadpi-bluetooth-api
-    privileged: true
     build:
       context: ./services/nomadpi-bluetooth-api
     restart: unless-stopped
     volumes:
-    - ./volumes/nomadpi-bluetooth-api:/app
-    - /run/dbus:/run/dbus:ro
+      - ./volumes/nomadpi-bluetooth-api:/app
+      - /run/dbus:/run/dbus:ro
     ports:
-    - "5007:5007"
+      - "5007:5007"
     command: sh -c "python3 server.py"
     # command: sh -c "python3 -m flask --app server run --host=0.0.0.0 --port=5007"
     # environment:
@@ -403,14 +395,14 @@ services:
       ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/${ZIGBEE_UDEV_KEY}
       ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: deconz
     ports:
-    - "8080:8080"
+      - "8080:8080"
     volumes:
-    - ./volumes/zigbee2mqtt/data:/app/data
+      - ./volumes/zigbee2mqtt/data:/app/data
     devices:
-    - /dev/${ZIGBEE_UDEV_KEY}:/dev/${ZIGBEE_UDEV_KEY}
+      - /dev/${ZIGBEE_UDEV_KEY}:/dev/${ZIGBEE_UDEV_KEY}
     restart: unless-stopped
     depends_on:
-    - mosquitto
+      - mosquitto
 
 secrets:
   cloudflare_tunnel_token:
@@ -421,3 +413,4 @@ secrets:
     file: ./volumes/secrets/nextcloud/nextcloud_username
   nextcloud_password:
     file: ./volumes/secrets/nextcloud/nextcloud_password
+
