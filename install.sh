@@ -90,8 +90,10 @@ trap 'handle_error' ERR
         local repo_name=$1
         mkdir -p "$install_dir/volumes/$repo_name/data/"
         cp -r "$install_dir/services/$repo_name/data" "$install_dir/volumes/$repo_name/"
-        mkdir "$install_dir/volumes/$repo_name/data/projects"
-        git clone "git@github.com:coconup/$repo_name" "$install_dir/volumes/$repo_name/data/projects/$repo_name"
+        project_dir="$install_dir/volumes/$repo_name/data/projects"
+        mkdir -p "$project_dir"
+        git clone "git@github.com:coconup/$repo_name" "$project_dir/$repo_name"
+        sudochown -R root:root "$project_dir/$repo_name"
     }
 
     clone_nodered_project "nomadpi-core-api"
