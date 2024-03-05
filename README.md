@@ -44,6 +44,64 @@ Here is a list of the main features of the stack.
 
 The stack can be installed on a fresh installation of Raspbian OS (recommended Lite 64bit). It is compatible with (at least) the Raspberry Pi 4 and Raspberry Pi 5.
 
+## Getting Started
+
+Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-step instructions on how to install the stack.
+
+1.  Flash a copy of Raspbian OS lite 64-bit and boot your Raspberry Pi.
+
+2. SSH into your Raspberry Pi after it booted (this might take some minutes upon first run). The command below assumes you chose `pi` as your username and `raspberrypi` as your hostname, while flashing the OS.
+
+    ```bash
+    ssh pi@raspberrypi.local
+    ```
+
+3.  Run the install script:
+    
+    ```bash
+    wget -q -O - "https://raw.githubusercontent.com/coconup/nomadpi/master/install.sh" | dos2unix | bash
+    ```
+    
+    This script installs all necessary dependencies, Docker and Docker Compose. It will reboot the Pi after it runs.
+
+4.  After rebooting, SSH into your Raspberry Pi again and start the stack:
+    
+    ```bash
+    cd ~/nomadpi
+    ./start.sh
+    ```
+
+## Services and resources
+
+#### Core services
+
+  - **nomadPi React**: React-based frontend ([GitHub project](https://github.com/coconup/nomadpi-react)). Access it at http://raspberrypi.local:3000.
+
+  - **Portainer CE**: Web-based Docker management interface. Access it at http://raspberrypi.local:9000.
+
+  - **Frigate**: AI-powered surveillance service for CCTV that employs real-time object detection and alerts for enhanced security monitoring. Access it at http://raspberrypi.local:5000.
+    
+  - **nomadPi Core API**: Node-RED-based core API for controlling the nomadPi hardware ([GitHub project](https://github.com/coconup/nomadpi-core-api)). Access it at http://raspberrypi.local:1880.
+    
+  - **nomadPi Automation API**: Node-RED-based automation API ([GitHub project](https://github.com/coconup/nomadpi-automation-api)). Access it at http://raspberrypi.local:1881.
+
+  - **nomadPi App API**: Node.js API serving the React application ([GitHub project](https://github.com/coconup/nomadpi-app-api)). Access it at http://raspberrypi.local:3001.
+    
+
+#### Additional Services
+    
+  - **GPSD**: GPS daemon container.
+    
+  - **Mosquitto**: MQTT broker for communication between services.
+    
+  - **MariaDB**: MariaDB database for storing configuration data.
+    
+  - **Zigbee2mqtt**: Zigbee to MQTT bridge.
+    
+  - **Cloudflared tunnel**: Container for running Cloudflare Tunnel.
+    
+  - **Nextcloud client**: Client for backing up your data onto a remote Nextcloud installation.
+    
 ## Supported hardware
 
 Here is a list of currently supported devices and affiliate links for where to purchase them. Pull requests for additional devices support are highly valued.
@@ -68,12 +126,12 @@ Check out [this article](https://coconup.medium.com/lithium-on-the-cheap-build-a
 Vendor | Description | Purchase links
 --- | --- | ---
 JBD | JBD BMS's with bluetooth connection | - [100-150A](https://s.click.aliexpress.com/e/_DmvUcU1)<br>- [200A](https://s.click.aliexpress.com/e/_DBEQQeN)
-Victron | Smart shunt (latest firmware + GATT must be activated) | - [500A](https://www.amazon.com/Victron-SmartShunt-500AMP-Bluetooth-Battery/dp/B0856PHNLX?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=6224a6f2d11a68e9f768870f845484a5&camp=1789&creative=9325)<br />- [1000A](https://www.amazon.com/Victron-Energy-SmartShunt-Battery-Bluetooth/dp/B0BW9VZGKL/?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=accbea52737d41f1ecf329364de44345&camp=1789&creative=9325)
-Daly | Daly BMS's with bluetooth connection | - [link](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=daly+bms+bluetooth&_sacat=0&_odkw=sok+bms&_osacat=0&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
+<!-- Victron | Smart shunt (latest firmware + GATT must be activated) | - [500A](https://www.amazon.com/Victron-SmartShunt-500AMP-Bluetooth-Battery/dp/B0856PHNLX?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=6224a6f2d11a68e9f768870f845484a5&camp=1789&creative=9325)<br />- [1000A](https://www.amazon.com/Victron-Energy-SmartShunt-Battery-Bluetooth/dp/B0BW9VZGKL/?&_encoding=UTF8&tag=nomadpi-20&linkCode=ur2&linkId=accbea52737d41f1ecf329364de44345&camp=1789&creative=9325) -->
+<!-- Daly | Daly BMS's with bluetooth connection | - [link](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=daly+bms+bluetooth&_sacat=0&_odkw=sok+bms&_osacat=0&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
 ANT | ANT BMS's with bluetooth connection | - [link](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p4432023.m570.l1313&_nkw=ant+bms&_sacat=0&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
-JK | JK BMS's with bluetooth connection | - [link](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=jk+bms&_sacat=0&_odkw=supervolt+100ah&_osacat=0&mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1)
+JK | JK BMS's with bluetooth connection | - [link](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=jk+bms&_sacat=0&_odkw=supervolt+100ah&_osacat=0&mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1) -->
 Liontron | LiFePo4 batteries with bluetooth connection | - [🇪🇺 100Ah](https://www.ebay.de/itm/364428392327?epid=5035171829&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)<br />- [🇬🇧 100Ah](https://www.ebay.co.uk/itm/156069074273?mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1)
-Supervolt | LiFePo4 batteries with bluetooth connection | - [🇪🇺 100Ah](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p4432023.m570.l1313&_nkw=supervolt+100ah&_sacat=0&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)<br />- [🇬🇧 100Ah](https://www.ebay.co.uk/sch/i.html?_from=R40&_trksid=p4432023.m570.l1313&_nkw=supervolt+100ah&_sacat=0&mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1)
+<!-- Supervolt | LiFePo4 batteries with bluetooth connection | - [🇪🇺 100Ah](https://www.ebay.de/sch/i.html?_from=R40&_trksid=p4432023.m570.l1313&_nkw=supervolt+100ah&_sacat=0&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)<br />- [🇬🇧 100Ah](https://www.ebay.co.uk/sch/i.html?_from=R40&_trksid=p4432023.m570.l1313&_nkw=supervolt+100ah&_sacat=0&mkcid=1&mkrid=710-53481-19255-0&siteid=3&campid=5338708652&customid=&toolid=10001&mkevt=1) -->
 
 
 #### Solar chargers
@@ -110,74 +168,6 @@ Vendor | Description | Purchase links
 --- | --- | ---
 Webasto | Thermo Top Evo 5 (hydronic) | [link](https://www.ebay.de/itm/115675106017?amdata=enc%3AAQAIAAAAoA7GDa3oY8v9qlv2pZStVRE9wbOMMwdp25yy5Px8jZ83J0aSgGPOQHd8uGdNhld%2BJxY5fBbY6BAXKgCNIcw8DnaRccsX9GkSzRpkk9dg%2FVRmPSmQFuQlvJ%2Fpey7GAZxnh7sFSWc2vRQn99wYKLDzoCHQMC%2B0R2%2FWdBIIMM1ulqvFkcyZY85Jdr%2Bso6e6YirklUUJUuLEyo9LcQ45f700oDs%3D&mkcid=1&mkrid=707-53477-19255-0&siteid=77&campid=5338708652&customid=&toolid=10001&mkevt=1)
 
-## Getting Started
-
-Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-step instructions on how to install the stack.
-
-1.  Flash a copy of Raspbian OS lite 64-bit and boot your Raspberry Pi.
-
-2. SSH into your Raspberry Pi after it booted (this might take some minutes upon first run). The command below assumes you chose `pi` as your username and `raspberrypi` as your hostname, while flashing the OS.
-
-    ```bash
-    ssh pi@raspberrypi.local
-    ```
-
-3.  Install Git and clone this repository:
-    
-    ```bash
-    sudo apt-get install git
-    git clone git@github.com:coconup/nomadpi.git ~/nomadpi
-    ```
-
-4.  Run the installation script:
-    
-    ```bash
-    cd ~/nomadpi
-    ./install.sh
-    ```
-    
-    This script installs all necessary services, `direnv`, Docker and Docker Compose. It will reboot the Pi after it runs.
-
-5.  Start the stack:
-    
-    ```bash
-    cd ~/nomadpi
-    docker-compose up -d
-    ```
-    
-    This command will start all the defined services in the background.
-
-## Services and resources
-
-#### Core services
-
-  - **nomadPi React**: React-based frontend ([GitHub project](https://github.com/coconup/nomadpi-react)). Access it at http://raspberrypi.local:3000.
-
-  - **Portainer CE**: Web-based Docker management interface. Access it at http://raspberrypi.local:9000.
-
-  - **Frigate**: AI-powered surveillance service for CCTV that employs real-time object detection and alerts for enhanced security monitoring. Access it at http://raspberrypi.local:5000.
-    
-  - **nomadPi Core API**: Node-RED-based core API for controlling the nomadPi hardware ([GitHub project](https://github.com/coconup/nomadpi-core-api)). Access it at http://raspberrypi.local:1880.
-    
-  - **nomadPi Automation API**: Node-RED-based automation API ([GitHub project](https://github.com/coconup/nomadpi-automation-api)). Access it at http://raspberrypi.local:1881.
-
-  - **nomadPi App API**: Node.js API serving the React application ([GitHub project](https://github.com/coconup/nomadpi-app-api)). Access it at http://raspberrypi.local:3001.
-    
-
-#### Additional Services
-    
-  - **GPSD**: GPS daemon container.
-    
-  - **Mosquitto**: MQTT broker for communication between services.
-    
-  - **MariaDB**: MariaDB database for storing configuration data.
-    
-  - **Zigbee2mqtt**: Zigbee to MQTT bridge.
-    
-  - **Cloudflared tunnel**: Container for running Cloudflare Tunnel.
-    
-  - **Nextcloud client**: Client for backing up your data onto a remote Nextcloud installation.
-    
 ## Supporting the project
 
 If you feel like it, you can financially support the project in one of these ways:

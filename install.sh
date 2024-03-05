@@ -4,10 +4,12 @@ set -e  # Exit script on any error
 
 logfile="/tmp/nomadpi_install.log"
 progress_file="/tmp/nomadpi_install_progress.log"
+result_file="/tmp/nomadpi_install_result.log"
 
 GREY='\033[90m'
 GREEN='\033[0;32m'
 BOLD='\033[1m'
+PINK='\e[38;5;206m'
 NC='\033[0m' # No Color
 
 if [ -e "$logfile" ]; then
@@ -16,6 +18,10 @@ fi
 
 if [ -e "$progress_file" ]; then
     rm "$progress_file"
+fi
+
+if [ -e "$result_file" ]; then
+    rm "$result_file"
 fi
 
 if [ -d "./nomadpi" ]; then
@@ -28,9 +34,11 @@ update_progress() {
 }
 
 error_exit() {
-  echo -e "${BOLD}ERROR: Installation failed. Full log available at $logfile${NC}" >&1
-  echo -e "" >&1
-  tail -n 25 "$logfile" >&1
+  echo -e "${BOLD}ERROR: Installation failed. Full log available at $logfile${NC}" >> "$result_file"
+  echo -e "" >> "$result_file"
+  tail -n 25 "$logfile" >> "$result_file"
+
+  sleep 1
 }
 
 handle_error() {
@@ -93,7 +101,7 @@ trap 'handle_error' ERR
         project_dir="$install_dir/volumes/$repo_name/data/projects"
         mkdir -p "$project_dir"
         git clone "git@github.com:coconup/$repo_name" "$project_dir/$repo_name"
-        sudochown -R root:root "$project_dir/$repo_name"
+        sudo chown -R root:root "$project_dir/$repo_name"
     }
 
     clone_nodered_project "nomadpi-core-api"
@@ -157,7 +165,14 @@ EOF
 
     docker-compose --version
 
-    update_progress 'Rebooting system. After reboot, run ~/nomadpi/start.sh in order to complete the installation'
+    cat <<EOF > "$result_file"
+Once the system has rebooted, follow these steps in order to complete the installation:
+- ssh $USER@$(hostname).local
+- cd $install_dir
+- ./start.sh
+EOF
+
+    update_progress 'All dependencies installed. Rebooting system'
 
     sleep 5
 
@@ -173,11 +188,15 @@ while [ -e /proc/$bg_job_pid ]; do
 
   echo -e "${BOLD}$(tail -n 1 "$progress_file")...${NC}"
 
-  tail -n 10 "$logfile" | while IFS= read -r line; do
-    echo -e "${GREY}${line}${NC}"
-  done
+  if [ -e "$result_file" ]; then
+    echo -e "${PINK}$(cat "$result_file")${NC}"
+  else
+    tail -n 10 "$logfile" | while IFS= read -r line; do
+      echo -e "${GREY}${line}${NC}"
+    done
+  fi
 
-  sleep 2
+  sleep 0.1
 done
 
 tail -n 10 "$logfile" | while IFS= read -r line; do
