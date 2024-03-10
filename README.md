@@ -46,8 +46,6 @@ The stack can be installed on a fresh installation of Raspbian OS (recommended L
 
 ## Getting Started
 
-Check out [this video](https://www.youtube.com/watch?v=a_yJqSot-Hc) for step-by-step instructions on how to install the stack.
-
 1.  Flash a copy of Raspbian OS lite 64-bit and boot your Raspberry Pi.
 
 2. SSH into your Raspberry Pi after it booted (this might take some minutes upon first run). The command below assumes you chose `pi` as your username and `raspberrypi` as your hostname, while flashing the OS.
