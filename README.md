@@ -2,7 +2,7 @@
 
 This is a software stack designed to run on the Raspberry Pi that lets you control everything within your campervan, boat or tiny home. 
 
-It was initiated as an alternative software stack for the [VanPi](https://pekaway.de/) platform, which it aims at supporting in the future, but it can also run independently.
+It was initiated as an alternative software stack for the [VanPi](https://pekaway.de/) platform ([GitHub repo](https://github.com/Pekaway/VAN_PI)), which it aims at supporting in the future, but it can also run independently.
 
 ![dashboard](https://i.ibb.co/jzgrRPw/nomadpi-dashboard.png)
 
