@@ -8,7 +8,7 @@ It was initiated as an alternative software stack for the [VanPi](https://pekawa
 
 Check out the video below for an introduction to the system:
 
-[![nomadPi overview](https://i.ibb.co/SQ4d8sf/nomadpi-intro-video.pn)](https://www.youtube.com/watch?v=1wNc4X0X_4g "nomadPi overview")
+[![nomadPi overview](https://i.ibb.co/SQ4d8sf/nomadpi-intro-video.png)](https://www.youtube.com/watch?v=1wNc4X0X_4g "nomadPi overview")
 
 
 ## Main features
