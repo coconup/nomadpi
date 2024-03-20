@@ -53,7 +53,7 @@ The stack can be installed on a fresh installation of Raspbian OS (recommended L
 
 Check out this video guiding you through the steps necessary to install nomadPi onto your Raspberry Pi:
 
-[![nomadPi installation](https://i.ibb.co/JHg3JMs/nomadpi-install.png)]([https://www.youtube.com/watch?v=1wNc4X0X_4g](https://www.youtube.com/watch?v=07Ir4JKFUQw) "nomadPi installation")
+[![nomadPi installation](https://i.ibb.co/JHg3JMs/nomadpi-install.png)](https://www.youtube.com/watch?v=07Ir4JKFUQw "nomadPi installation")
 
 1.  Flash a copy of Raspbian OS lite 64-bit and boot your Raspberry Pi.
 
