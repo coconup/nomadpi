@@ -4,7 +4,10 @@ This is a software stack designed to run on the Raspberry Pi that lets you contr
 
 It was initiated as an alternative software stack for the [VanPi](https://pekaway.de/) platform ([GitHub repo](https://github.com/Pekaway/VAN_PI)), which it aims at supporting in the future, but it can also run independently.
 
-![dashboard](https://i.ibb.co/jzgrRPw/nomadpi-dashboard.png)
+<!-- ![dashboard](https://i.ibb.co/jzgrRPw/nomadpi-dashboard.png) -->
+
+[![nomadPi overview](https://i.ibb.co/SQ4d8sf/nomadpi-intro-video.png)](https://www.youtube.com/watch?v=1wNc4X0X_4g "nomadPi overview")
+
 
 ## Main features
 
