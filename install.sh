@@ -71,7 +71,7 @@ trap 'handle_error' ERR
     mkdir -p "$HOME"/.ssh
     curl --silent https://api.github.com/meta | jq --raw-output '"github.com "+.ssh_keys[]' >> "$HOME"/.ssh/known_hosts
 
-    git clone --progress git@github.com:coconup/nomadpi.git >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi.git >> "$logfile" 2>&1
 
     cd "nomadpi" || exit 1
     install_dir=$(pwd)
@@ -79,14 +79,14 @@ trap 'handle_error' ERR
     ssh-keyscan github.com >> ~/.ssh/known_hosts
 
     mkdir -p "$install_dir"/volumes
-    git clone --progress git@github.com:coconup/nomadpi-app-api.git "$install_dir"/volumes/nomadpi-app-api >> "$logfile" 2>&1
-    git clone --progress git@github.com:coconup/nomadpi-services-api.git "$install_dir"/volumes/nomadpi-services-api >> "$logfile" 2>&1
-    git clone --progress git@github.com:coconup/nomadpi-react.git "$install_dir"/volumes/nomadpi-react >> "$logfile" >&1
-    git clone --progress git@github.com:coconup/nomadpi-mqtt-hub.git "$install_dir"/volumes/nomadpi-mqtt-hub >> "$logfile" 2>&1
-    git clone --progress git@github.com:coconup/nomadpi-gpsd-to-mqtt.git "$install_dir"/volumes/nomadpi-gpsd-to-mqtt >> "$logfile" 2>&1
-    git clone --progress git@github.com:coconup/nomadpi-butterfly-ai "$install_dir"/volumes/nomadpi-butterfly-ai >> "$logfile" 2>&1
-    git clone --progress git@github.com:coconup/nomadpi-open-wake-word "$install_dir"/volumes/nomadpi-open-wake-word >> "$logfile" 2>&1
-    git clone --progress git@github.com:coconup/nomadpi-bluetooth-api "$install_dir"/volumes/nomadpi-bluetooth-api >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-app-api.git "$install_dir"/volumes/nomadpi-app-api >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-services-api.git "$install_dir"/volumes/nomadpi-services-api >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-react.git "$install_dir"/volumes/nomadpi-react >> "$logfile" >&1
+    git clone --progress https://github.com/coconup/nomadpi-mqtt-hub.git "$install_dir"/volumes/nomadpi-mqtt-hub >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-gpsd-to-mqtt.git "$install_dir"/volumes/nomadpi-gpsd-to-mqtt >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-butterfly-ai "$install_dir"/volumes/nomadpi-butterfly-ai >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-open-wake-word "$install_dir"/volumes/nomadpi-open-wake-word >> "$logfile" 2>&1
+    git clone --progress https://github.com/coconup/nomadpi-bluetooth-api "$install_dir"/volumes/nomadpi-bluetooth-api >> "$logfile" 2>&1
 
     mkdir -p "$install_dir"/volumes/frigate/config
 
@@ -100,7 +100,7 @@ trap 'handle_error' ERR
         cp -r "$install_dir/services/$repo_name/data" "$install_dir/volumes/$repo_name/"
         project_dir="$install_dir/volumes/$repo_name/data/projects"
         mkdir -p "$project_dir"
-        git clone "git@github.com:coconup/$repo_name" "$project_dir/$repo_name"
+        git clone "https://github.com/coconup/$repo_name" "$project_dir/$repo_name"
         sudo chown -R root:root "$project_dir/$repo_name"
     }
 
