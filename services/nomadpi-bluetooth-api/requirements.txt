@@ -3,6 +3,6 @@ crcmod
 flask
 dbus-python
 pycairo
-PyGObject
+PyGObject==3.50.0
 bleak
 aiohttp

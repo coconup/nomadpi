@@ -54,6 +54,7 @@ services:
     restart: unless-stopped
   
   nomadpi-core-api:
+    privileged: true
     profiles:
       - core
     container_name: nomadpi-core-api

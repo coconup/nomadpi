@@ -8,12 +8,12 @@ HEALTHCHECK_PORT="${MYSQL_TCP_PORT:-3306}"
 EXPECTED="mysqld is alive"
 
 # run the check
-if [ -z "$MYSQL_ROOT_PASSWORD" ] ; then
-   RESPONSE=$(mysqladmin ping -h localhost)
+if [ -z "$MYSQL_PASSWORD" ] ; then
+   RESPONSE=$(/usr/bin/mariadb-admin ping -h localhost)
 else
    # note - there is NO space between "-p" and the password. This is
    # intentional. It is part of the mysql and mysqladmin API.
-   RESPONSE=$(mysqladmin -p${MYSQL_ROOT_PASSWORD} ping -h localhost)
+   RESPONSE=$(/usr/bin/mariadb-admin -p${MYSQL_PASSWORD} -u${MYSQL_USER} ping -h localhost)
 fi
 
 # did the mysqladmin command succeed?
